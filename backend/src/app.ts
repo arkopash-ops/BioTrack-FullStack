@@ -5,6 +5,8 @@ import cookieParser from "cookie-parser";
 import logger from "./middlewares/logger.middleware";
 
 import authRoutes from "./routes/auth.routes";
+import profileRoutes from "./routes/profile.routes";
+
 import { errorLogger } from "./middlewares/error.middleware";
 
 const app = express();
@@ -21,6 +23,7 @@ app.use(cors({
 
 // Routes
 app.use("/api/auth", authRoutes);
+app.use("/api/profile", profileRoutes);
 
 app.use(errorLogger);
 

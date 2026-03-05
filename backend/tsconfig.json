@@ -16,7 +16,7 @@
     "skipLibCheck": true,
 
     // Node.js types
-    "types": ["node"],
+    "types": ["node", "express"],
 
     // Source maps for debugging
     "sourceMap": true,
@@ -27,8 +27,13 @@
 
     // Additional options
     "resolveJsonModule": true,
-    "forceConsistentCasingInFileNames": true
+    "forceConsistentCasingInFileNames": true,
+
+    "typeRoots": ["./node_modules/@types", "./src/types"]
   },
-  "include": ["src/**/*", "types"],
+  "ts-node": {
+    "files": true
+  },
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
 }
