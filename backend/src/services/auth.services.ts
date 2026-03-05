@@ -1,4 +1,5 @@
 import UserModel from "../models/user.model";
+import ProfileModel from "../models/profile.model";
 import bcrypt from "bcrypt";
 import { generateToken } from "../config/jwt";
 import { Roles, UserStatus } from "../types/users.types";
@@ -43,12 +44,29 @@ export const register = async (
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
+    // Create the user
     const newUser = await UserModel.create({
         name,
         email,
         password: hashedPassword,
         role: Roles.VISITOR,
         status: UserStatus.NONE,
+    });
+
+    // Automatically create a profile for the new user
+    await ProfileModel.create({
+        userId: newUser._id,
+        bio: "I'm new User.",
+        profileImageUrl: "/public/default-profile.jpg",
+        phoneNo: "",
+        socialLinks: {},
+        addresses: {
+            street: "",
+            city: "",
+            state: "",
+            zip: "",
+            country: "",
+        },
     });
 
     return {
