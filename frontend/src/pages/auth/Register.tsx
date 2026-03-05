@@ -14,18 +14,16 @@ import LockIcon from "@mui/icons-material/Lock";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 const Register: React.FC = () => {
-  const [name, setName] = useState<string>("");
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
   const handleRegister = async () => {
     try {
       const response = await fetch("http://localhost:8080/api/auth/register", {
         method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name, email, password }),
         credentials: "include",
       });
@@ -37,7 +35,13 @@ const Register: React.FC = () => {
         return;
       }
 
-      navigate("/dashboard", { state: { user: data.user } });
+      // Save token and notify Navbar
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        window.dispatchEvent(new Event("authChanged"));
+      }
+
+      navigate("/dashboard");
     } catch (error) {
       console.error("Registration error:", error);
       alert("Something went wrong. Please try again later.");
@@ -78,27 +82,15 @@ const Register: React.FC = () => {
           fullWidth
           margin="normal"
           value={name}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setName(e.target.value)
-          }
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <PersonIcon sx={{ color: "#e0f7e9" }} />
-                </InputAdornment>
-              ),
-            },
+          onChange={(e) => setName(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <PersonIcon sx={{ color: "#e0f7e9" }} />
+              </InputAdornment>
+            ),
           }}
-          sx={{
-            input: { color: "#fff" },
-            label: { color: "#e0f7e9" },
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": { borderColor: "#e0f7e9" },
-              "&:hover fieldset": { borderColor: "#b2f5ea" },
-              "&.Mui-focused fieldset": { borderColor: "#81e6d9" },
-            },
-          }}
+          sx={{ input: { color: "#fff" }, label: { color: "#e0f7e9" } }}
         />
 
         <TextField
@@ -106,27 +98,15 @@ const Register: React.FC = () => {
           fullWidth
           margin="normal"
           value={email}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setEmail(e.target.value)
-          }
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <EmailIcon sx={{ color: "#e0f7e9" }} />
-                </InputAdornment>
-              ),
-            },
+          onChange={(e) => setEmail(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <EmailIcon sx={{ color: "#e0f7e9" }} />
+              </InputAdornment>
+            ),
           }}
-          sx={{
-            input: { color: "#fff" },
-            label: { color: "#e0f7e9" },
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": { borderColor: "#e0f7e9" },
-              "&:hover fieldset": { borderColor: "#b2f5ea" },
-              "&.Mui-focused fieldset": { borderColor: "#81e6d9" },
-            },
-          }}
+          sx={{ input: { color: "#fff" }, label: { color: "#e0f7e9" } }}
         />
 
         <TextField
@@ -135,27 +115,15 @@ const Register: React.FC = () => {
           fullWidth
           margin="normal"
           value={password}
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setPassword(e.target.value)
-          }
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <LockIcon sx={{ color: "#e0f7e9" }} />
-                </InputAdornment>
-              ),
-            },
+          onChange={(e) => setPassword(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <LockIcon sx={{ color: "#e0f7e9" }} />
+              </InputAdornment>
+            ),
           }}
-          sx={{
-            input: { color: "#fff" },
-            label: { color: "#e0f7e9" },
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": { borderColor: "#e0f7e9" },
-              "&:hover fieldset": { borderColor: "#b2f5ea" },
-              "&.Mui-focused fieldset": { borderColor: "#81e6d9" },
-            },
-          }}
+          sx={{ input: { color: "#fff" }, label: { color: "#e0f7e9" } }}
         />
 
         <Button
@@ -182,7 +150,7 @@ const Register: React.FC = () => {
             cursor: "pointer",
             "&:hover": { color: "#185c29", textDecoration: "underline" },
           }}
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/login")}
         >
           Already have an account? Login
         </Typography>

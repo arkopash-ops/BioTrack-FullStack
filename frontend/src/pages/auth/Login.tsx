@@ -13,14 +13,37 @@ import LockIcon from "@mui/icons-material/Lock";
 import ArrowForwardIcon from "@mui/icons-material/ArrowForward";
 
 const Login: React.FC = () => {
-  const [email, setEmail] = useState<string>("");
-  const [password, setPassword] = useState<string>("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleLogin = () => {
-    alert(
-      `Email: ${email}\nPassword: ${password}\n(This is just a design demo)`,
-    );
+  const handleLogin = async () => {
+    try {
+      const response = await fetch("http://localhost:8080/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email, password }),
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        alert(`Login failed: ${data.message || "Invalid credentials"}`);
+        return;
+      }
+
+      // Save token and notify Navbar
+      if (data.token) {
+        localStorage.setItem("token", data.token);
+        window.dispatchEvent(new Event("authChanged"));
+      }
+
+      navigate("/dashboard");
+    } catch (error) {
+      console.error("Login error:", error);
+      alert("Something went wrong. Please try again later.");
+    }
   };
 
   return (
@@ -56,27 +79,16 @@ const Login: React.FC = () => {
           label="Email"
           fullWidth
           margin="normal"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setEmail(e.target.value)
-          }
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <EmailIcon sx={{ color: "#e0f7e9" }} />
-                </InputAdornment>
-              ),
-            },
+          value={email}
+          onChange={(e) => setEmail(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <EmailIcon sx={{ color: "#e0f7e9" }} />
+              </InputAdornment>
+            ),
           }}
-          sx={{
-            input: { color: "#fff" },
-            label: { color: "#e0f7e9" },
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": { borderColor: "#e0f7e9" },
-              "&:hover fieldset": { borderColor: "#b2f5ea" },
-              "&.Mui-focused fieldset": { borderColor: "#81e6d9" },
-            },
-          }}
+          sx={{ input: { color: "#fff" }, label: { color: "#e0f7e9" } }}
         />
 
         <TextField
@@ -84,27 +96,16 @@ const Login: React.FC = () => {
           type="password"
           fullWidth
           margin="normal"
-          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-            setPassword(e.target.value)
-          }
-          slotProps={{
-            input: {
-              startAdornment: (
-                <InputAdornment position="start">
-                  <LockIcon sx={{ color: "#e0f7e9" }} />
-                </InputAdornment>
-              ),
-            },
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+          InputProps={{
+            startAdornment: (
+              <InputAdornment position="start">
+                <LockIcon sx={{ color: "#e0f7e9" }} />
+              </InputAdornment>
+            ),
           }}
-          sx={{
-            input: { color: "#fff" },
-            label: { color: "#e0f7e9" },
-            "& .MuiOutlinedInput-root": {
-              "& fieldset": { borderColor: "#e0f7e9" },
-              "&:hover fieldset": { borderColor: "#b2f5ea" },
-              "&.Mui-focused fieldset": { borderColor: "#81e6d9" },
-            },
-          }}
+          sx={{ input: { color: "#fff" }, label: { color: "#e0f7e9" } }}
         />
 
         <Button

@@ -1,4 +1,4 @@
-import { useLocation } from "react-router-dom";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Typography,
@@ -23,14 +23,8 @@ interface User {
   status: string;
 }
 
-interface LocationState {
-  user: User;
-}
-
 const Dashboard: React.FC = () => {
-  const location = useLocation();
-  const state = location.state as LocationState;
-  const { user } = state;
+  const [user, setUser] = useState<User | null>(null);
 
   const getStatusColor = (status: string) => {
     switch (status.toLowerCase()) {
@@ -44,6 +38,24 @@ const Dashboard: React.FC = () => {
         return "primary";
     }
   };
+
+  // Mock user data
+  useEffect(() => {
+    const mockUser: User = {
+      name: "John Doe",
+      email: "john.doe@example.com",
+      password: "hashed_password_123",
+      role: "Admin",
+      status: "Active",
+    };
+
+    // Defer state update to avoid synchronous setState warning
+    const timer = setTimeout(() => setUser(mockUser), 0);
+
+    return () => clearTimeout(timer); // cleanup
+  }, []);
+
+  if (!user) return null;
 
   return (
     <Container
@@ -68,12 +80,7 @@ const Dashboard: React.FC = () => {
         <Typography
           variant="h4"
           gutterBottom
-          sx={{
-            color: "#fff",
-            fontWeight: "bold",
-            textAlign: "center",
-            mb: 4,
-          }}
+          sx={{ color: "#fff", fontWeight: "bold", textAlign: "center", mb: 4 }}
         >
           User Dashboard
         </Typography>
@@ -89,7 +96,6 @@ const Dashboard: React.FC = () => {
               </Typography>
             </Stack>
           </Grid>
-
           <Grid size={{ xs: 12, sm: 6 }}>
             <Stack direction="row" spacing={2} alignItems="center">
               <Avatar sx={{ bgcolor: "#9c27b0" }}>
@@ -100,7 +106,6 @@ const Dashboard: React.FC = () => {
               </Typography>
             </Stack>
           </Grid>
-
           <Grid size={{ xs: 12, sm: 6 }}>
             <Stack direction="row" spacing={2} alignItems="center">
               <Avatar sx={{ bgcolor: "#f44336" }}>
@@ -111,7 +116,6 @@ const Dashboard: React.FC = () => {
               </Typography>
             </Stack>
           </Grid>
-
           <Grid size={{ xs: 12, sm: 6 }}>
             <Stack direction="row" spacing={2} alignItems="center">
               <Avatar sx={{ bgcolor: "#ff9800" }}>
@@ -122,7 +126,6 @@ const Dashboard: React.FC = () => {
               </Typography>
             </Stack>
           </Grid>
-
           <Grid size={{ xs: 12, sm: 6 }}>
             <Stack direction="row" spacing={2} alignItems="center">
               <Avatar sx={{ bgcolor: "#4caf50" }}>
@@ -135,7 +138,6 @@ const Dashboard: React.FC = () => {
               />
             </Stack>
           </Grid>
-
           <Grid size={{ xs: 12, sm: 6 }}>
             <Stack direction="row" spacing={2} alignItems="center">
               <Avatar sx={{ bgcolor: "#795548" }}>
