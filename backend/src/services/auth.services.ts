@@ -1,15 +1,15 @@
 import UserModel from "../models/user.model";
 import bcrypt from "bcrypt";
-import { signToken } from "../config/jwt";
-import { Roles, UserStatus } from '../types/users.types';
+import { generateToken } from "../config/jwt";
+import { Roles, UserStatus } from "../types/users.types";
 
-interface IUser {
+interface IUserInput {
     name: string;
     email: string;
     password: string;
 }
 
-interface UserWithoutPassword {
+export interface UserWithoutPassword {
     _id: string;
     name: string;
     email: string;
@@ -18,34 +18,28 @@ interface UserWithoutPassword {
 }
 
 export const register = async (
-    userData: IUser
-): Promise<{
-    user: UserWithoutPassword;
-    token: string;
-}> => {
+    userData: IUserInput
+): Promise<{ user: UserWithoutPassword; token: string }> => {
     const { name, email, password } = userData;
 
     if (!password) {
-        throw {
-            statusCode: 400,
-            message: "Password is required"
-        };
+        const err = new Error("Password is required");
+        (err as any).statusCode = 400;
+        throw err;
     }
 
     if (!email || !name) {
-        throw {
-            statusCode: 400,
-            message: "Name and email are required"
-        };
+        const err = new Error("Name and email are required");
+        (err as any).statusCode = 400;
+        throw err;
     }
 
     const existingUser = await UserModel.findOne({ email });
     if (existingUser) {
-        throw {
-            statusCode: 400,
-            message: "Email already registered"
-        }
-    };
+        const err = new Error("Email already registered");
+        (err as any).statusCode = 400;
+        throw err;
+    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -57,8 +51,6 @@ export const register = async (
         status: UserStatus.NONE,
     });
 
-    const token = signToken({ id: newUser._id, email: newUser.email, role: newUser.role });
-
     return {
         user: {
             _id: newUser._id.toString(),
@@ -67,41 +59,34 @@ export const register = async (
             role: newUser.role,
             status: newUser.status,
         },
-        token
+        token: generateToken(newUser._id.toString()),
     };
 };
 
 export const login = async (
-    data: { email: string; password: string; }
+    data: { email: string; password: string }
 ): Promise<{ user: UserWithoutPassword; token: string }> => {
     const { email, password } = data;
 
     if (!email || !password) {
-        throw {
-            statusCode: 400,
-            message: "Email and password are required"
-        };
+        const err = new Error("Email and password are required");
+        (err as any).statusCode = 400;
+        throw err;
     }
 
-    // Find user and include password
     const user = await UserModel.findOne({ email }).select("+password");
     if (!user) {
-        throw {
-            statusCode: 401,
-            message: "Invalid email or password"
-        };
+        const err = new Error("Invalid email or password");
+        (err as any).statusCode = 401;
+        throw err;
     }
 
     const isValidPassword = await bcrypt.compare(password, user.password);
     if (!isValidPassword) {
-        throw {
-            statusCode: 401,
-            message: "Invalid email or password"
-        };
+        const err = new Error("Invalid email or password");
+        (err as any).statusCode = 401;
+        throw err;
     }
-
-    // Generate token
-    const token = signToken({ id: user._id, email: user.email, role: user.role });
 
     return {
         user: {
@@ -111,6 +96,6 @@ export const login = async (
             role: user.role,
             status: user.status,
         },
-        token
+        token: generateToken(user._id.toString()),
     };
 };
