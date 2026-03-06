@@ -9,6 +9,10 @@ import Register from "../pages/auth/Register";
 
 import AdminDashboard from "../pages/admin/Dashboard";
 import VisitorDashboard from "../pages/visitor/Dashboard";
+
+import GetProfile from "../pages/admin/profile/GetProfile";
+import EditProfile from "../pages/admin/profile/EditProfile";
+
 const AppRouter = () => {
   return (
     <BrowserRouter>
@@ -20,6 +24,9 @@ const AppRouter = () => {
 
           <Route path="/admin/dashboard" element={<AdminDashboard />} />
           <Route path="/visitor/dashboard" element={<VisitorDashboard />} />
+
+          <Route path="/admin/profile/:userId" element={<GetProfile />} />
+          <Route path="/admin/edit-profile/:userId" element={<EditProfile />} />
         </Routes>
       </Layout>
     </BrowserRouter>

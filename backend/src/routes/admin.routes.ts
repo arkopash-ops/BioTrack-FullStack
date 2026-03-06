@@ -8,7 +8,7 @@ const router = Router();
 
 router.get("/allProfiles", protect, authorizedRole(Roles.ADMIN), adminController._getAllUsers);
 router.get("/:ID", protect, authorizedRole(Roles.ADMIN), adminController._getUserByID);
-router.put("/:ID", adminController._updateUserByID);
-router.delete("/:ID", adminController._deleteUserByID);
+router.put("/:ID", protect, authorizedRole(Roles.ADMIN), adminController._updateUserByID);
+router.delete("/:ID", protect, authorizedRole(Roles.ADMIN), adminController._deleteUserByID);
 
 export default router;
