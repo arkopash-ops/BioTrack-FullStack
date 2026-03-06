@@ -7,13 +7,13 @@ const Navbar: React.FC = () => {
 
   // Initial auth state
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
-    !!localStorage.getItem("token"),
+    localStorage.getItem("isAuthenticated") === "true",
   );
 
   // Listen for auth changes
   useEffect(() => {
     const updateAuth = () => {
-      setIsAuthenticated(!!localStorage.getItem("token"));
+      setIsAuthenticated(localStorage.getItem("isAuthenticated") === "true");
     };
 
     window.addEventListener("authChanged", updateAuth);
@@ -35,8 +35,8 @@ const Navbar: React.FC = () => {
         return;
       }
 
-      // Clear token and notify Navbar
-      localStorage.removeItem("token");
+      // Clear flag and notify Navbar
+      localStorage.removeItem("isAuthenticated");
       window.dispatchEvent(new Event("authChanged"));
 
       navigate("/login");

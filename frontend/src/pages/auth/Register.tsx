@@ -35,9 +35,9 @@ const Register: React.FC = () => {
         return;
       }
 
-      // Save token and notify Navbar
-      if (data.token) {
-        localStorage.setItem("token", data.token);
+      // Save flag and notify Navbar
+      if (data.success) {
+        localStorage.setItem("isAuthenticated", "true");
         window.dispatchEvent(new Event("authChanged"));
       }
 

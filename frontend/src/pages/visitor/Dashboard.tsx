@@ -14,6 +14,7 @@ import PhoneIcon from "@mui/icons-material/Phone";
 import LocationOnIcon from "@mui/icons-material/LocationOn";
 import PublicIcon from "@mui/icons-material/Public";
 import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 interface Profile {
   _id: string;
@@ -46,6 +47,7 @@ interface Profile {
 
 const Dashboard: React.FC = () => {
   const [profile, setProfile] = useState<Profile | null>(null);
+  const navigate = useNavigate();
 
   useEffect(() => {
     const fetchUser = async () => {
@@ -56,13 +58,21 @@ const Dashboard: React.FC = () => {
         );
 
         setProfile(res.data.profile);
-      } catch (error) {
+      } catch (error: unknown) {
         console.error("Failed to fetch profile:", error);
+
+        if (axios.isAxiosError(error)) {
+          if (error.response?.status === 401) {
+            localStorage.removeItem("isAuthenticated");
+            window.dispatchEvent(new Event("authChanged"));
+            navigate("/login");
+          }
+        }
       }
     };
 
     fetchUser();
-  }, []);
+  }, [navigate]);
 
   if (!profile) return <Typography>Loading...</Typography>;
 
@@ -99,6 +109,7 @@ const Dashboard: React.FC = () => {
           <Grid size={{ xs: 12 }}>
             <Stack alignItems="center">
               <Avatar
+                alt={profile.userId.name}
                 src={`http://localhost:8080/public/${profile.profileImageUrl}`}
                 sx={{ width: 80, height: 80 }}
               />
