@@ -45,9 +45,9 @@ const profileSchema = new Schema<ProfileDocument>({
     },
     profileImageUrl: {
         type: String,
-        default: "/public/default-profile.jpg",
+        default: "default-profile.jpg",
         trim: true,
-        set: (s: string) => s || "/public/default-profile.jpg",
+        set: (s: string) => s || "default-profile.jpg",
     },
     phoneNo: {
         type: String,

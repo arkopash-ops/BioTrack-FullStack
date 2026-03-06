@@ -8,6 +8,7 @@ import authRoutes from "./routes/auth.routes";
 import profileRoutes from "./routes/profile.routes";
 
 import { errorLogger } from "./middlewares/error.middleware";
+import path from "path";
 
 const app = express();
 
@@ -20,6 +21,9 @@ app.use(cors({
   origin: "http://localhost:5173",
   credentials: true,
 }));
+
+// images from Public
+app.use("/public", express.static(path.join(__dirname, "../public")));
 
 // Routes
 app.use("/api/auth", authRoutes);

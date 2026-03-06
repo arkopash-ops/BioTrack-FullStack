@@ -3,59 +3,68 @@ import {
   Container,
   Typography,
   Paper,
-  Chip,
   Avatar,
   Stack,
+  Link,
 } from "@mui/material";
 import Grid from "@mui/system/Grid";
 import PersonIcon from "@mui/icons-material/Person";
-import EmailIcon from "@mui/icons-material/Email";
-import LockIcon from "@mui/icons-material/Lock";
 import SecurityIcon from "@mui/icons-material/Security";
-import VerifiedUserIcon from "@mui/icons-material/VerifiedUser";
-import CookieIcon from "@mui/icons-material/Cookie";
+import PhoneIcon from "@mui/icons-material/Phone";
+import LocationOnIcon from "@mui/icons-material/LocationOn";
+import PublicIcon from "@mui/icons-material/Public";
+import axios from "axios";
 
-interface User {
-  name: string;
-  email: string;
-  password: string;
-  role: string;
-  status: string;
+interface Profile {
+  _id: string;
+
+  userId: {
+    name: string;
+    role: string;
+  };
+
+  bio: string;
+  profileImageUrl: string;
+  phoneNo: string;
+
+  addresses: {
+    street: string;
+    city: string;
+    state: string;
+    zip: string;
+    country: string;
+  };
+
+  socialLinks: {
+    facebook: string;
+    instagram: string;
+  };
+
+  createdAt: string;
+  updatedAt: string;
 }
 
 const Dashboard: React.FC = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const [profile, setProfile] = useState<Profile | null>(null);
 
-  const getStatusColor = (status: string) => {
-    switch (status.toLowerCase()) {
-      case "active":
-        return "success";
-      case "inactive":
-        return "default";
-      case "banned":
-        return "error";
-      default:
-        return "primary";
-    }
-  };
-
-  // Mock user data
   useEffect(() => {
-    const mockUser: User = {
-      name: "John Doe",
-      email: "john.doe@example.com",
-      password: "hashed_password_123",
-      role: "Admin",
-      status: "Active",
+    const fetchUser = async () => {
+      try {
+        const res = await axios.get<{ profile: Profile }>(
+          "http://localhost:8080/api/profile/me",
+          { withCredentials: true },
+        );
+
+        setProfile(res.data.profile);
+      } catch (error) {
+        console.error("Failed to fetch profile:", error);
+      }
     };
 
-    // Defer state update to avoid synchronous setState warning
-    const timer = setTimeout(() => setUser(mockUser), 0);
-
-    return () => clearTimeout(timer); // cleanup
+    fetchUser();
   }, []);
 
-  if (!user) return null;
+  if (!profile) return <Typography>Loading...</Typography>;
 
   return (
     <Container
@@ -86,65 +95,90 @@ const Dashboard: React.FC = () => {
         </Typography>
 
         <Grid container spacing={3}>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <Stack direction="row" spacing={2} alignItems="center">
-              <Avatar sx={{ bgcolor: "#2ecc71" }}>
-                <PersonIcon />
-              </Avatar>
-              <Typography sx={{ color: "#fff" }}>
-                <strong>Name:</strong> {user.name}
-              </Typography>
-            </Stack>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <Stack direction="row" spacing={2} alignItems="center">
-              <Avatar sx={{ bgcolor: "#9c27b0" }}>
-                <EmailIcon />
-              </Avatar>
-              <Typography sx={{ color: "#fff" }}>
-                <strong>Email:</strong> {user.email}
-              </Typography>
-            </Stack>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <Stack direction="row" spacing={2} alignItems="center">
-              <Avatar sx={{ bgcolor: "#f44336" }}>
-                <LockIcon />
-              </Avatar>
-              <Typography sx={{ color: "#fff" }}>
-                <strong>Password (hashed):</strong> {user.password}
-              </Typography>
-            </Stack>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <Stack direction="row" spacing={2} alignItems="center">
-              <Avatar sx={{ bgcolor: "#ff9800" }}>
-                <SecurityIcon />
-              </Avatar>
-              <Typography sx={{ color: "#fff" }}>
-                <strong>Role:</strong> {user.role}
-              </Typography>
-            </Stack>
-          </Grid>
-          <Grid size={{ xs: 12, sm: 6 }}>
-            <Stack direction="row" spacing={2} alignItems="center">
-              <Avatar sx={{ bgcolor: "#4caf50" }}>
-                <VerifiedUserIcon />
-              </Avatar>
-              <Chip
-                label={user.status}
-                color={getStatusColor(user.status)}
-                size="small"
+          {/* Profile Image */}
+          <Grid size={{ xs: 12 }}>
+            <Stack alignItems="center">
+              <Avatar
+                src={`http://localhost:8080/public/${profile.profileImageUrl}`}
+                sx={{ width: 80, height: 80 }}
               />
             </Stack>
           </Grid>
+
+          {/* Name */}
           <Grid size={{ xs: 12, sm: 6 }}>
             <Stack direction="row" spacing={2} alignItems="center">
-              <Avatar sx={{ bgcolor: "#795548" }}>
-                <CookieIcon />
-              </Avatar>
-              <Typography sx={{ color: "#fff" }}>
-                <strong>Token:</strong> Stored in your browser cookie
+              <PersonIcon />
+              <Typography>
+                <strong>Name:</strong> {profile.userId.name}
+              </Typography>
+            </Stack>
+          </Grid>
+
+          {/* Role */}
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <SecurityIcon />
+              <Typography>
+                <strong>Role:</strong> {profile.userId.role}
+              </Typography>
+            </Stack>
+          </Grid>
+
+          {/* Bio */}
+          <Grid size={{ xs: 12 }}>
+            <Typography>
+              <strong>Bio:</strong> {profile.bio}
+            </Typography>
+          </Grid>
+
+          {/* Phone */}
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <PhoneIcon />
+              <Typography>
+                <strong>Phone:</strong> {profile.phoneNo}
+              </Typography>
+            </Stack>
+          </Grid>
+
+          {/* Address */}
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <Stack direction="row" spacing={2} alignItems="flex-start">
+              <LocationOnIcon />
+              <Typography>
+                <strong>Address:</strong>
+                <br />
+                {profile.addresses.street}
+                <br />
+                {profile.addresses.city}, {profile.addresses.state}
+                <br />
+                {profile.addresses.zip}, {profile.addresses.country}
+              </Typography>
+            </Stack>
+          </Grid>
+
+          {/* Social Links */}
+          <Grid size={{ xs: 12 }}>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <PublicIcon />
+              <Typography>
+                <strong>Facebook:</strong>{" "}
+                <Link href={profile.socialLinks.facebook} target="_blank">
+                  Open
+                </Link>
+              </Typography>
+            </Stack>
+          </Grid>
+
+          <Grid size={{ xs: 12 }}>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <PublicIcon />
+              <Typography>
+                <strong>Instagram:</strong>{" "}
+                <Link href={profile.socialLinks.instagram} target="_blank">
+                  Open
+                </Link>
               </Typography>
             </Stack>
           </Grid>

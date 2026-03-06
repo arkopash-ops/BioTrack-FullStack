@@ -41,7 +41,7 @@ export const adminSeeder = async () => {
         await ProfileModel.create({
             userId: createdAdmin._id,
             bio: "I'm Admin.",
-            profileImageUrl: "/public/admin-profile.png",
+            profileImageUrl: "/admin-profile.png",
             phoneNo: "",
             socialLinks: {},
             addresses: {
