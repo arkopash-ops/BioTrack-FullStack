@@ -1,13 +1,17 @@
 import { Request, Response, NextFunction } from 'express';
 
+interface AppError extends Error {
+    statusCode?: number;
+}
+
 export const errorLogger = (
-    err: Error,
+    err: AppError,
     req: Request,
     res: Response,
     next: NextFunction
 ) => {
     console.error(`ERROR ${req.method} ${req.url} - ${err.message}`);
-    res.status((err as any).statusCode || 500).json({
+    res.status(err.statusCode || 500).json({
         success: false,
         message: err.message || "Internal Server Error",
     });

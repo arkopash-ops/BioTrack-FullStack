@@ -2,6 +2,7 @@ import UserModel from "../models/user.model";
 import bcrypt from "bcrypt";
 import { Roles, UserStatus, User } from "../types/users.types";
 import mongoose from "mongoose";
+import ProfileModel from "../models/profile.model";
 
 export const adminSeeder = async () => {
     try {
@@ -35,6 +36,21 @@ export const adminSeeder = async () => {
             email: createdAdmin.email,
             role: createdAdmin.role,
             status: createdAdmin.status,
+        });
+
+        await ProfileModel.create({
+            userId: createdAdmin._id,
+            bio: "I'm Admin.",
+            profileImageUrl: "/public/admin-profile.png",
+            phoneNo: "",
+            socialLinks: {},
+            addresses: {
+                street: "",
+                city: "",
+                state: "",
+                zip: "",
+                country: "",
+            },
         });
     } catch (error) {
         console.error("Error seeding admin user:", error);

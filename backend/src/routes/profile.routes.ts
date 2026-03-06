@@ -1,10 +1,11 @@
 import { Router } from "express";
-import { _getMyProfile } from "../controllers/profile.controller";
+import * as profileController from "../controllers/profile.controller";
 import { protect } from "../middlewares/auth.middleware";
 
 const router = Router();
 
-// GET /api/profile/me
-router.get("/me", protect, _getMyProfile);
+router.get("/me", protect, profileController._getMyProfile);
+router.put("/me", protect, profileController._updateMyProfile);
+router.delete("/me", protect, profileController._deleteMyProfile);
 
 export default router;
