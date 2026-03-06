@@ -160,11 +160,13 @@ const Dashboard: React.FC = () => {
               <Typography>
                 <strong>Address:</strong>
                 <br />
-                {profile.addresses.street}
+                {profile.addresses?.street || "No street provided"}
                 <br />
-                {profile.addresses.city}, {profile.addresses.state}
+                {profile.addresses?.city || "No city"},{" "}
+                {profile.addresses?.state || "No state"}
                 <br />
-                {profile.addresses.zip}, {profile.addresses.country}
+                {profile.addresses?.zip || "No zip"},{" "}
+                {profile.addresses?.country || "No country"}
               </Typography>
             </Stack>
           </Grid>
@@ -175,9 +177,13 @@ const Dashboard: React.FC = () => {
               <PublicIcon />
               <Typography>
                 <strong>Facebook:</strong>{" "}
-                <Link href={profile.socialLinks.facebook} target="_blank">
-                  Open
-                </Link>
+                {profile.socialLinks?.facebook ? (
+                  <Link href={profile.socialLinks.facebook} target="_blank">
+                    Open
+                  </Link>
+                ) : (
+                  "Not provided"
+                )}
               </Typography>
             </Stack>
           </Grid>
@@ -187,9 +193,13 @@ const Dashboard: React.FC = () => {
               <PublicIcon />
               <Typography>
                 <strong>Instagram:</strong>{" "}
-                <Link href={profile.socialLinks.instagram} target="_blank">
-                  Open
-                </Link>
+                {profile.socialLinks?.instagram ? (
+                  <Link href={profile.socialLinks.instagram} target="_blank">
+                    Open
+                  </Link>
+                ) : (
+                  "Not provided"
+                )}
               </Typography>
             </Stack>
           </Grid>

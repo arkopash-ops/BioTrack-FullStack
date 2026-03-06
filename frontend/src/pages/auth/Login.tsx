@@ -36,10 +36,18 @@ const Login: React.FC = () => {
       // Save flag and notify Navbar
       if (data.success) {
         localStorage.setItem("isAuthenticated", "true");
+        // Store the role for other parts of the app to use optionally
+        localStorage.setItem("userRole", data.user.role);
         window.dispatchEvent(new Event("authChanged"));
+        
+        if (data.user.role === "admin") {
+          navigate("/admin/dashboard");
+        } else {
+          navigate("/visitor/dashboard");
+        }
+      } else {
+          navigate("/dashboard");
       }
-
-      navigate("/dashboard");
     } catch (error) {
       console.error("Login error:", error);
       alert("Something went wrong. Please try again later.");

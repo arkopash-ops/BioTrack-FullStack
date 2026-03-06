@@ -7,8 +7,8 @@ import Guest from "../pages/guest/Guest";
 import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 
-import Dashboard from "../pages/visitor/Dashboard";
-
+import AdminDashboard from "../pages/admin/Dashboard";
+import VisitorDashboard from "../pages/visitor/Dashboard";
 const AppRouter = () => {
   return (
     <BrowserRouter>
@@ -18,7 +18,8 @@ const AppRouter = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/admin/dashboard" element={<AdminDashboard />} />
+          <Route path="/visitor/dashboard" element={<VisitorDashboard />} />
         </Routes>
       </Layout>
     </BrowserRouter>

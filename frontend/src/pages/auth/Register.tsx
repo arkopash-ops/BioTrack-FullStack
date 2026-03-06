@@ -41,7 +41,7 @@ const Register: React.FC = () => {
         window.dispatchEvent(new Event("authChanged"));
       }
 
-      navigate("/dashboard");
+      navigate("/visitor/dashboard");
     } catch (error) {
       console.error("Registration error:", error);
       alert("Something went wrong. Please try again later.");
