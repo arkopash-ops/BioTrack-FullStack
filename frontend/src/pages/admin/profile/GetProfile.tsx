@@ -12,28 +12,7 @@ import {
   Avatar,
 } from "@mui/material";
 
-interface Profile {
-  _id: string;
-  userId: {
-    _id: string;
-    name: string;
-    email: string;
-  };
-  phoneNo?: string;
-  bio?: string;
-  addresses?: {
-    street?: string;
-    city?: string;
-    state?: string;
-    zipCode?: string;
-    country?: string;
-  };
-  socialLinks?: {
-    facebook?: string;
-    instagram?: string;
-  };
-  profileImageUrl?: string;
-}
+import type { GetProfileData as Profile } from "../../../interfaces";
 
 const GetProfile = () => {
   const { userId } = useParams<{ userId: string }>();

@@ -16,34 +16,7 @@ import PublicIcon from "@mui/icons-material/Public";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-interface Profile {
-  _id: string;
-
-  userId: {
-    name: string;
-    role: string;
-  };
-
-  bio: string;
-  profileImageUrl: string;
-  phoneNo: string;
-
-  addresses: {
-    street: string;
-    city: string;
-    state: string;
-    zip: string;
-    country: string;
-  };
-
-  socialLinks: {
-    facebook: string;
-    instagram: string;
-  };
-
-  createdAt: string;
-  updatedAt: string;
-}
+import type { Profile } from "../../interfaces";
 
 const Dashboard: React.FC = () => {
   const [profile, setProfile] = useState<Profile | null>(null);

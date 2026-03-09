@@ -15,23 +15,7 @@ import {
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 
-interface Address {
-  street: string;
-  city: string;
-  state: string;
-  zip: string;
-  country: string;
-}
-
-interface User {
-  _id: string;
-  name: string;
-  email: string;
-  phoneNo: string;
-  bio: string;
-  addresses: Address;
-  profileImage: string;
-}
+import type { DashboardUser as User } from "../../interfaces";
 
 const AdminDashboard = () => {
   const [users, setUsers] = useState<User[]>([]);

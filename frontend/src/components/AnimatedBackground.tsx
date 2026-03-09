@@ -1,11 +1,7 @@
 import { useEffect, useState } from "react";
 import { animate } from "animejs";
 
-interface Circle {
-  top: number;
-  left: number;
-  size: number;
-}
+import type { Circle } from "../interfaces";
 
 const AnimatedBackground = () => {
   const [circles] = useState<Circle[]>(() =>

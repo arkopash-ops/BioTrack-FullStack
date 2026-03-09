@@ -12,31 +12,7 @@ import {
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
 
-interface Address {
-  street: string;
-  city: string;
-  state: string;
-  zip: string;
-  country: string;
-}
-
-interface SocialLinks {
-  facebook: string;
-  instagram: string;
-}
-
-interface Profile {
-  _id: string;
-  userId: {
-    name: string;
-    role: string;
-  };
-  bio: string;
-  profileImageUrl: string;
-  phoneNo: string;
-  addresses: Address;
-  socialLinks: SocialLinks;
-}
+import type { Profile } from "../../../interfaces";
 
 const defaultProfile: Profile = {
   _id: "",
