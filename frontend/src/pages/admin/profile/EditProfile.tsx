@@ -42,6 +42,13 @@ const EditProfile: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [errors, setErrors] = useState<Record<string, string>>({});
 
+  const imageSrc = profile.profileImageUrl
+    ? profile.profileImageUrl.startsWith("blob:") ||
+      profile.profileImageUrl.startsWith("http")
+      ? profile.profileImageUrl
+      : `http://localhost:8080/public/${profile.profileImageUrl}`
+    : "http://localhost:8080/public/default/default-profile.jpg";
+
   useEffect(() => {
     const fetchProfile = async () => {
       if (!userId) return;
@@ -76,9 +83,11 @@ const EditProfile: React.FC = () => {
     const file = e.target.files[0];
     setImageFile(file);
 
+    const previewUrl = URL.createObjectURL(file);
+
     setProfile((prev) => ({
       ...prev,
-      profileImageUrl: URL.createObjectURL(file),
+      profileImageUrl: previewUrl,
     }));
   };
 
@@ -124,6 +133,14 @@ const EditProfile: React.FC = () => {
 
     if (!profile.bio.trim()) newErrors.bio = "Bio is required";
 
+    if (imageFile) {
+      if (!imageFile.type.startsWith("image/")) {
+        newErrors.profileImage = "Only image files are allowed";
+      } else if (imageFile.size > 2 * 1024 * 1024) {
+        newErrors.profileImage = "Image must be smaller than 2MB";
+      }
+    }
+
     setErrors(newErrors);
 
     return Object.keys(newErrors).length === 0;
@@ -135,9 +152,12 @@ const EditProfile: React.FC = () => {
     try {
       const formData = new FormData();
 
-      formData.append("name", profile.userId.name);
       formData.append("bio", profile.bio);
       formData.append("phoneNo", profile.phoneNo);
+      formData.append("name", profile.userId.name);
+
+      formData.append("facebook", profile.socialLinks.facebook);
+      formData.append("instagram", profile.socialLinks.instagram);
 
       formData.append("street", profile.addresses.street);
       formData.append("city", profile.addresses.city);
@@ -145,20 +165,14 @@ const EditProfile: React.FC = () => {
       formData.append("zip", profile.addresses.zip);
       formData.append("country", profile.addresses.country);
 
-      formData.append("facebook", profile.socialLinks.facebook);
-      formData.append("instagram", profile.socialLinks.instagram);
-
       if (imageFile) {
         formData.append("profileImage", imageFile);
       }
 
       const res = await axios.put(
-        `http://localhost:8080/api/admin/profile/${userId}`,
+        `http://localhost:8080/api/admin/${userId}`,
         formData,
-        {
-          withCredentials: true,
-          headers: { "Content-Type": "multipart/form-data" },
-        },
+        { withCredentials: true },
       );
 
       if (res.data.success) {
@@ -183,14 +197,7 @@ const EditProfile: React.FC = () => {
         <Stack spacing={3}>
           {/* Profile Image */}
           <Stack alignItems="center" spacing={1}>
-            <Avatar
-              src={
-                imageFile
-                  ? URL.createObjectURL(imageFile)
-                  : `http://localhost:8080/public/${profile.profileImageUrl}`
-              }
-              sx={{ width: 90, height: 90 }}
-            />
+            <Avatar src={imageSrc} sx={{ width: 90, height: 90 }} />
 
             <Button component="label" variant="text">
               Change Profile Image
@@ -201,6 +208,11 @@ const EditProfile: React.FC = () => {
                 onChange={handleImageChange}
               />
             </Button>
+            {errors.profileImage && (
+              <Typography color="error" variant="body2">
+                {errors.profileImage}
+              </Typography>
+            )}
           </Stack>
 
           <TextField

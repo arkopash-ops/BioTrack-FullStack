@@ -6,7 +6,6 @@ import { UserDocument } from "../models/user.model";
 export const _getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const profiles = await adminServices.getAllUsers();
-
         const result = profiles.map(profile => ({
             _id: profile._id,
             name: (profile.userId as any)?.name,
@@ -17,57 +16,81 @@ export const _getAllUsers = async (req: Request, res: Response, next: NextFuncti
             profileImage: profile.profileImageUrl,
         }));
 
-        return res.status(200).json({
-            success: true,
-            data: result,
-        });
+        res.status(200).json({ success: true, data: result });
     } catch (error) {
         next(error);
     }
-}
-
+};
 
 export const _getUserByID = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const profile = await adminServices.getUserByID(req.params.ID as string);
-        return res.status(200).json({
-            success: true,
-            data: profile,
-        });
+        const ID = req.params.ID;
+
+        if (!ID || Array.isArray(ID)) {
+            throw new Error("Invalid or missing user ID");
+        }
+
+        const profile = await adminServices.getUserByID(ID);
+        res.status(200).json({ success: true, data: profile });
     } catch (error) {
         next(error);
     }
-}
-
+};
 
 export const _updateUserByID = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const profile = await adminServices.updateUserByID(req.params.ID as string, req.body);
-        return res.status(200).json({
-            success: true,
-            data: profile,
-        });
+        const ID = req.params.ID;
+
+        if (!ID || Array.isArray(ID)) {
+            throw new Error("Invalid or missing user ID");
+        }
+
+        const { name, street, city, state, zip, country, facebook, instagram, ...restData } = req.body;
+        const updateData: any = { ...restData };
+
+        if (street || city || state || zip || country) {
+            updateData.addresses = {
+                street: street || "",
+                city: city || "",
+                state: state || "",
+                zip: zip || "",
+                country: country || ""
+            };
+        }
+
+        if (facebook || instagram) {
+            updateData.socialLinks = {
+                facebook: facebook || "",
+                instagram: instagram || ""
+            };
+        }
+
+        if (req.file) {
+            updateData.profileImageUrl = `profileImage/${req.file.filename}`;
+        }
+
+        const profile = await adminServices.updateUserByID(ID, updateData, name);
+
+        res.status(200).json({ success: true, data: profile });
     } catch (error) {
         next(error);
     }
-}
+};
 
-
-export const _deleteUserByID = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
+export const _deleteUserByID = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const { profile, user }: { profile: ProfileDocument; user: UserDocument } =
-            await adminServices.deleteUserByID(req.params.ID as string);
+        const ID = req.params.ID;
 
-        return res.status(200).json({
+        if (!ID || Array.isArray(ID)) {
+            throw new Error("Invalid or missing user ID");
+        }
+
+        const { profile, user }: { profile: ProfileDocument; user: UserDocument }
+            = await adminServices.deleteUserByID(ID);
+
+        res.status(200).json({
             success: true,
-            data: {
-                profile,
-                user,
-            },
+            data: { profile, user },
             message: "User and profile deleted successfully",
         });
     } catch (error) {

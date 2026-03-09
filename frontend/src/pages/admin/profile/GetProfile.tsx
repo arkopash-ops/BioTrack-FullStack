@@ -47,6 +47,29 @@ const GetProfile = () => {
     navigate(`/admin/edit-profile/${profile._id}`);
   };
 
+  const handleDeleteUser = async () => {
+    if (!userId) return;
+
+    const confirmDelete = window.confirm(
+      "Are you sure you want to delete this user?",
+    );
+
+    if (!confirmDelete) return;
+
+    try {
+      await axios.delete(`http://localhost:8080/api/admin/${userId}`, {
+        withCredentials: true,
+      });
+
+      alert("User deleted successfully");
+
+      navigate("/admin/dashboard");
+    } catch (error) {
+      console.error("Delete failed:", error);
+      alert("Failed to delete user");
+    }
+  };
+
   if (loading) return <Typography>Loading...</Typography>;
   if (!profile) return <Typography>Profile not found</Typography>;
 
@@ -69,9 +92,19 @@ const GetProfile = () => {
           >
             <Typography variant="h4">User Profile</Typography>
 
-            <Button variant="contained" onClick={handleEditProfile}>
-              Edit Profile
-            </Button>
+            <Box display="flex" gap={2}>
+              <Button variant="contained" onClick={handleEditProfile}>
+                Edit Profile
+              </Button>
+
+              <Button
+                variant="contained"
+                color="error"
+                onClick={handleDeleteUser}
+              >
+                Delete User
+              </Button>
+            </Box>
           </Box>
 
           {/* Profile Image */}
@@ -79,8 +112,8 @@ const GetProfile = () => {
             <Avatar
               src={
                 profile.profileImageUrl
-                  ? `http://localhost:8080/${profile.profileImageUrl}`
-                  : ""
+                  ? `http://localhost:8080/public/${profile.profileImageUrl}`
+                  : "http://localhost:8080/public/default/default-profile.jpg"
               }
               sx={{ width: 100, height: 100 }}
             />

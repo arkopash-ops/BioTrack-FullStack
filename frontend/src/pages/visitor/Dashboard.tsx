@@ -83,7 +83,11 @@ const Dashboard: React.FC = () => {
             <Stack alignItems="center">
               <Avatar
                 alt={profile.userId.name}
-                src={`http://localhost:8080/public/${profile.profileImageUrl}`}
+                src={
+                  profile.profileImageUrl
+                    ? `http://localhost:8080/public/${profile.profileImageUrl}`
+                    : "http://localhost:8080/public/default/default-profile.jpg"
+                }
                 sx={{ width: 80, height: 80 }}
               />
             </Stack>

@@ -2,7 +2,7 @@ import express from "express";
 import cors from "cors";
 import cookieParser from "cookie-parser";
 
-import logger from "./middlewares/logger.middleware";
+import { logger } from "./middlewares/logger.middleware";
 
 import authRoutes from "./routes/auth.routes";
 import profileRoutes from "./routes/profile.routes";
@@ -14,14 +14,14 @@ import path from "path";
 const app = express();
 
 //middleware
-app.use(express.json());
-app.use(cookieParser());
-app.use(logger);
-
 app.use(cors({
   origin: "http://localhost:5173",
   credentials: true,
 }));
+
+app.use(express.json());
+app.use(cookieParser());
+app.use(logger);
 
 // images from Public
 app.use("/public", express.static(path.join(__dirname, "../public")));

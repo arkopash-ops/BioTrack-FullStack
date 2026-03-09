@@ -21,7 +21,7 @@ export const updateMyProfile = async (userId: string, data: Partial<ProfileDocum
     const profile = await ProfileModel.findOneAndUpdate(
         { userId },
         data,
-        { new: true }
+        { returnDocument: "after" }
     ).populate({
         path: "userId",
         select: "name -_id"

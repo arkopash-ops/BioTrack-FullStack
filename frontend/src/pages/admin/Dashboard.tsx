@@ -76,9 +76,9 @@ const AdminDashboard = () => {
                 <TableCell>
                   <Avatar
                     src={
-                      user.profileImage.startsWith("/public")
-                        ? `http://localhost:8080${user.profileImage}`
-                        : user.profileImage
+                      user.profileImage
+                        ? `http://localhost:8080/public/${user.profileImage}`
+                        : "http://localhost:8080/public/default/default-profile.jpg"
                     }
                     alt={user.name}
                   />
