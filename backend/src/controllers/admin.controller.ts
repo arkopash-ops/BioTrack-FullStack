@@ -3,6 +3,8 @@ import * as adminServices from "../services/admin.services";
 import { ProfileDocument } from "../models/profile.model";
 import { UserDocument } from "../models/user.model";
 
+// for Users and Profiles
+
 export const _getAllUsers = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const profiles = await adminServices.getAllUsers();
@@ -97,3 +99,96 @@ export const _deleteUserByID = async (req: Request, res: Response, next: NextFun
         next(error);
     }
 };
+
+
+// ----------------------------------------------------------------------------------------------------
+
+
+// for Researcher Requests
+
+export const _getAllResearcherRequests = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const profiles = await adminServices.getAllResearcherRequests();
+        const result = profiles.map(profile => ({
+            _id: profile._id,
+            name: (profile.userId as any)?.name,
+            email: (profile.userId as any)?.email,
+            phoneNo: profile.phoneNo,
+            bio: profile.bio,
+            addresses: profile.addresses,
+            profileImage: profile.profileImageUrl,
+        }));
+
+        res.status(200).json({ success: true, data: result });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+export const _approveResearcher = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { ID } = req.params;
+        const reviewerId = req.user?._id?.toString();
+
+        if (!ID || Array.isArray(ID)) {
+            throw new Error("Invalid or missing user ID");
+        }
+
+        const profile = await adminServices.approveResearcher(ID, reviewerId);
+
+        if (!profile) {
+            throw new Error("Profile not found");
+        }
+
+        res.status(200).json({
+            success: true,
+            data: {
+                _id: profile._id,
+                name: (profile.userId as any).name,
+                email: (profile.userId as any).email,
+                phoneNo: profile.phoneNo,
+                bio: profile.bio,
+                addresses: profile.addresses,
+                profileImage: profile.profileImageUrl,
+                status: (profile.userId as any).status
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+}
+
+
+export const _rejectResearcher = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { ID } = req.params;
+        const reviewerId = req.user?._id?.toString();
+
+        if (!ID || Array.isArray(ID)) {
+            throw new Error("Invalid or missing user ID");
+        }
+
+        const profile = await adminServices.rejectResearcher(ID, reviewerId);
+
+        if (!profile) {
+            throw new Error("Profile not found");
+        }
+
+        res.status(200).json({
+            success: true,
+            data: {
+                _id: profile._id,
+                name: (profile.userId as any).name,
+                email: (profile.userId as any).email,
+                phoneNo: profile.phoneNo,
+                bio: profile.bio,
+                addresses: profile.addresses,
+                profileImage: profile.profileImageUrl,
+                status: (profile.userId as any).status
+            }
+        });
+    } catch (error) {
+        next(error);
+    }
+}

@@ -1,12 +1,14 @@
 import mongoose from "mongoose";
 import ProfileModel, { ProfileDocument } from "../models/profile.model";
+import ResearcherRequestModel from "../models/researcher-request.model";
 import UserModel, { UserDocument } from "../models/user.model";
+import { UserStatus } from "../types/users.types";
 
 export const getMyProfile = async (userId: string): Promise<ProfileDocument | null> => {
     const profile = await ProfileModel.findOne({ userId })
         .populate({
             path: "userId",
-            select: "name role -_id"
+            select: "name role status -_id"
         });
 
     if (!profile) {
@@ -51,7 +53,7 @@ export const deleteMyProfile = async (userId: string): Promise<{ profile: Profil
         if (!user) {
             throw new Error("User not found.");
         }
-        
+
         await session.commitTransaction();
         return { profile, user };
     } catch (error) {
@@ -60,4 +62,47 @@ export const deleteMyProfile = async (userId: string): Promise<{ profile: Profil
     } finally {
         await session.endSession();
     }
+};
+
+
+export const requestResearcher = async (userId: string): Promise<ProfileDocument | null> => {
+    if (!mongoose.Types.ObjectId.isValid(userId)) {
+        throw new Error("Invalid User ID format");
+    }
+
+    const existingRequest = await ResearcherRequestModel.findOne({ userId });
+
+    if (existingRequest?.status === UserStatus.PENDING) {
+        throw new Error("Researcher request is already pending");
+    }
+
+    if (existingRequest) {
+        existingRequest.status = UserStatus.PENDING;
+        existingRequest.reviewedAt = undefined;
+        existingRequest.reviewedBy = undefined;
+        await existingRequest.save();
+    } else {
+        await ResearcherRequestModel.create({
+            userId,
+            status: UserStatus.PENDING,
+        });
+    }
+
+    await UserModel.findByIdAndUpdate(
+        userId,
+        { $set: { status: UserStatus.PENDING } },
+        { returnDocument: "after" }
+    );
+
+    const profile = await ProfileModel.findOne({ userId }).populate({
+            path: "userId",
+            select: "name status -_id"
+        });
+
+
+    if (!profile) {
+        throw new Error("Profile not found.");
+    }
+
+    return profile;
 };

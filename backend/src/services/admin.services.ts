@@ -1,7 +1,11 @@
 import mongoose from "mongoose";
 import ProfileModel, { ProfileDocument } from "../models/profile.model";
+import ResearcherRequestModel from "../models/researcher-request.model";
 import UserModel, { UserDocument } from "../models/user.model";
+import { Roles, UserStatus } from "../types/users.types";
 
+
+// for Users and Profiles
 
 export const getAllUsers = async (): Promise<ProfileDocument[]> => {
     const profiles = await ProfileModel.find().populate({
@@ -73,5 +77,126 @@ export const deleteUserByID = async (ID: string): Promise<{ profile: ProfileDocu
         throw new Error("User not found");
     }
 
+    await ResearcherRequestModel.findOneAndDelete({ userId: profile.userId });
+
     return { profile, user };
 };
+
+
+// ----------------------------------------------------------------------------------------------------
+
+
+// for Researcher Requests
+
+export const getAllResearcherRequests = async (): Promise<ProfileDocument[]> => {
+    const pendingRequests = await ResearcherRequestModel.find({
+        status: UserStatus.PENDING,
+    }).select("userId");
+
+    const requestUserIds = pendingRequests.map((request) => request.userId);
+
+    if (requestUserIds.length === 0) {
+        throw new Error("No researcher requests found");
+    }
+
+    const profiles = await ProfileModel.find({
+        userId: { $in: requestUserIds },
+    }).populate({
+        path: "userId",
+        select: "name email status"
+    });
+
+    if (profiles.length === 0) {
+        throw new Error("No researcher requests found");
+    }
+
+    return profiles;
+};
+
+
+export const approveResearcher = async (ID: string, reviewedBy?: string): Promise<ProfileDocument | null> => {
+    if (!mongoose.Types.ObjectId.isValid(ID)) {
+        throw new Error("Invalid User ID format");
+    }
+
+    const pendingRequest = await ResearcherRequestModel.findOne({
+        userId: ID,
+        status: UserStatus.PENDING,
+    });
+
+    if (!pendingRequest) {
+        throw new Error("No pending researcher request found for this user");
+    }
+
+    await UserModel.findByIdAndUpdate(ID, {
+        $set: {
+            status: UserStatus.APPROVED,
+            role: Roles.RESEARCHER,
+        }
+    }, { returnDocument: "after" });
+
+    const reviewerObjectId = reviewedBy && mongoose.Types.ObjectId.isValid(reviewedBy)
+        ? new mongoose.Types.ObjectId(reviewedBy)
+        : undefined;
+
+    pendingRequest.status = UserStatus.APPROVED;
+    pendingRequest.reviewedAt = new Date();
+    pendingRequest.reviewedBy = reviewerObjectId;
+    await pendingRequest.save();
+
+    const profile = await ProfileModel.findOne({ userId: ID }).populate({
+        path: "userId",
+        select: "name email status"
+    });
+
+    if (!profile) {
+        throw new Error("Profile not found");
+    }
+
+    return profile;
+};
+
+
+export const rejectResearcher = async (ID: string, reviewedBy?: string): Promise<ProfileDocument | null> => {
+    if (!mongoose.Types.ObjectId.isValid(ID)) {
+        throw new Error("Invalid User ID format");
+    }
+
+    const pendingRequest = await ResearcherRequestModel.findOne({
+        userId: ID,
+        status: UserStatus.PENDING,
+    });
+
+    if (!pendingRequest) {
+        throw new Error("No pending researcher request found for this user");
+    }
+
+    await UserModel.findByIdAndUpdate(
+        ID,
+        { $set: { status: UserStatus.REJECTED } },
+        { returnDocument: "after" }
+    );
+
+    const reviewerObjectId = reviewedBy && mongoose.Types.ObjectId.isValid(reviewedBy)
+        ? new mongoose.Types.ObjectId(reviewedBy)
+        : undefined;
+
+    pendingRequest.status = UserStatus.REJECTED;
+    pendingRequest.reviewedAt = new Date();
+    pendingRequest.reviewedBy = reviewerObjectId;
+    await pendingRequest.save();
+
+    const profile = await ProfileModel.findOne({ userId: ID }).populate({
+        path: "userId",
+        select: "name email status"
+    });
+
+    if (!profile) {
+        throw new Error("Profile not found");
+    }
+
+    return profile;
+};
+
+
+// export const demoteResearcher

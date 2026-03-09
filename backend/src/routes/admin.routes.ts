@@ -7,6 +7,33 @@ import { upload } from "../middlewares/upload.middleware";
 
 const router = Router();
 
+// for Researcher Requests
+
+router.get(
+    "/researcher-requests",
+    protect,
+    authorizedRole(Roles.ADMIN),
+    adminController._getAllResearcherRequests
+);
+
+router.post(
+    "/researcher-requests/:ID/approve",
+    protect,
+    authorizedRole(Roles.ADMIN),
+    adminController._approveResearcher
+);
+
+router.post(
+    "/researcher-requests/:ID/reject",
+    protect,
+    authorizedRole(Roles.ADMIN),
+    adminController._rejectResearcher
+);
+
+// ----------------------------------------------------------------------------------------------------
+
+// for Users and Profiles
+
 router.get(
     "/allProfiles",
     protect,

@@ -76,3 +76,27 @@ export const _deleteMyProfile = async (req: Request, res: Response, next: NextFu
         next(error);
     }
 };
+
+
+export const _requestResearcher = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const userId = req.user?._id.toString();
+        if (!userId) {
+            return res.status(401).json({ success: false, message: "Unauthorized" });
+        }
+
+        const profile = await profileService.requestResearcher(userId);
+
+        if (!profile) {
+            return res.status(404).json({ success: false, message: "Profile not found." });
+        }
+
+        res.status(200).json({
+            success: true,
+            message: "Successfully requested to be a researcher.",
+            profile
+        });
+    } catch (error: any) {
+        next(error);
+    }
+};
