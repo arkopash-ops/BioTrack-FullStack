@@ -1,9 +1,9 @@
 import { Document, model, Schema, Types } from "mongoose";
-import { PopulationStatus, Species } from "../types/species.types";
+import { HabitatArea, PopulationStatus, Species, Taxonomy } from "../types/species.types";
 
 export interface SpeciesDocument extends Species, Document { }
 
-const habitatAreaSchema = new Schema({
+const habitatAreaSchema = new Schema<HabitatArea>({
     type: {
         type: String,
         enum: ['Polygon'],
@@ -13,9 +13,47 @@ const habitatAreaSchema = new Schema({
         type: [[[Number]]],
         required: false,
     }
-});
+}, { _id: false });
 
-const speciesSchema = new Schema({
+const taxonomySchema = new Schema<Taxonomy>({
+    kingdom: {
+        type: Types.ObjectId,
+        ref: "Taxonomy",
+        required: true
+    },
+    phylum: {
+        type: Types.ObjectId,
+        ref: "Taxonomy",
+        default: null
+    },
+    class: {
+        type: Types.ObjectId,
+        ref: "Taxonomy",
+        default: null
+    },
+    order: {
+        type: Types.ObjectId,
+        ref: "Taxonomy",
+        default: null
+    },
+    family: {
+        type: Types.ObjectId,
+        ref: "Taxonomy",
+        default: null
+    },
+    genus: {
+        type: Types.ObjectId,
+        ref: "Taxonomy",
+        default: null
+    },
+    species: {
+        type: Types.ObjectId,
+        ref: "Species",
+        default: null
+    },
+}, { _id: false });
+
+const speciesSchema = new Schema<SpeciesDocument>({
     commonName: {
         type: String,
         required: true,
@@ -26,15 +64,23 @@ const speciesSchema = new Schema({
         required: true,
         trim: true,
     },
+    aliases: {
+        type: [String],
+        default: [],
+        index: true,
+    },
+    taxonomy: taxonomySchema,
     predecessor: {
         type: Types.ObjectId,
         ref: "Species",
     },
-    successor: [{
-        type: Types.ObjectId,
-        ref: "Species",
+    successor: {
+        type: [{
+            type: Types.ObjectId,
+            ref: "Species"
+        }],
         default: [],
-    }],
+    },
     habitat: {
         type: [String],
         default: []
@@ -65,8 +111,13 @@ const speciesSchema = new Schema({
         type: Types.ObjectId,
         ref: "User"
     },
+    updatedBy: {
+        type: Types.ObjectId,
+        ref: "User"
+    },
 }, { timestamps: true });
 
+speciesSchema.index({ aliases: 1 });        
 speciesSchema.index({ habitatArea: "2dsphere" });       // for geo queries
 
 const SpeciesModel = model<SpeciesDocument>("Species", speciesSchema);
