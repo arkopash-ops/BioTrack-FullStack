@@ -9,7 +9,8 @@ export enum PopulationStatus {
     LEAST_CONCERN = "Least Concern",
     VULNERABLE = "Vulnerable",
     ENDANGERED = "Endangered",
-    CRITICALLY_ENDANGERED = "Critically Endangered"
+    CRITICALLY_ENDANGERED = "Critically Endangered",
+    EXTINCT = "Extinct"
 }
 
 export interface TaxonomyI {
@@ -26,6 +27,7 @@ export interface Species {
     commonName: string;
     scientificName: string;
     aliases: string[];
+    slug: string;
     taxonomy: TaxonomyI;
     predecessor?: Types.ObjectId;
     successor?: Types.ObjectId[];

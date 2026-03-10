@@ -1,5 +1,6 @@
 import { Document, model, Schema, Types } from "mongoose";
 import { HabitatArea, PopulationStatus, Species, TaxonomyI } from "../types/species.types";
+import slugify from "slugify";
 
 export interface SpeciesDocument extends Species, Document { }
 
@@ -45,12 +46,7 @@ const taxonomySchema = new Schema<TaxonomyI>({
         type: Types.ObjectId,
         ref: "Taxonomy",
         default: null
-    },
-    species: {
-        type: Types.ObjectId,
-        ref: "Species",
-        default: null
-    },
+    }
 }, { _id: false });
 
 const speciesSchema = new Schema<SpeciesDocument>({
@@ -67,12 +63,20 @@ const speciesSchema = new Schema<SpeciesDocument>({
     aliases: {
         type: [String],
         default: [],
-        index: true,
+        set: (arr: string[]) => arr.map(a => a.toLowerCase())
+    },
+    slug: {
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true,
+        trim: true
     },
     taxonomy: taxonomySchema,
     predecessor: {
         type: Types.ObjectId,
         ref: "Species",
+        default: null,
     },
     successor: {
         type: [{
@@ -117,8 +121,21 @@ const speciesSchema = new Schema<SpeciesDocument>({
     },
 }, { timestamps: true });
 
-speciesSchema.index({ aliases: 1 });        
+speciesSchema.index({ aliases: 1 });
 speciesSchema.index({ habitatArea: "2dsphere" });       // for geo queries
+
+speciesSchema.pre<SpeciesDocument>("validate", function () {
+    if (this.isModified("scientificName")) {
+        this.slug = slugify(this.scientificName, { lower: true, strict: true });
+    }
+});
+
+speciesSchema.pre("findOneAndUpdate", function () {
+    const update: any = this.getUpdate();
+    if (update.scientificName) {
+        update.slug = slugify(update.scientificName, { lower: true, strict: true });
+    }
+});
 
 const SpeciesModel = model<SpeciesDocument>("Species", speciesSchema);
 

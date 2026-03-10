@@ -1,5 +1,5 @@
 import { Router } from "express";
-import * as taxonomyController from "../controllers/taxonomy.controller"
+import * as taxonomyController from "../controllers/taxonomy.controller";
 import { protect } from "../middlewares/auth.middleware";
 
 const router = Router();
