@@ -1,7 +1,7 @@
 import { Document, model, Schema, Types } from "mongoose";
 import { Rank, taxonomy } from "../types/taxonomy.types";
 
-export interface TaxonomyDocument extends taxonomy, Document { }
+export interface TaxonomyDocument extends taxonomy, Document {}
 
 const taxonomySchema = new Schema<TaxonomyDocument>({
     name: {

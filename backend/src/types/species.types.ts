@@ -12,7 +12,7 @@ export enum PopulationStatus {
     CRITICALLY_ENDANGERED = "Critically Endangered"
 }
 
-export interface Taxonomy {
+export interface TaxonomyI {
     kingdom: Types.ObjectId;
     phylum?: Types.ObjectId;
     class?: Types.ObjectId;
@@ -26,7 +26,7 @@ export interface Species {
     commonName: string;
     scientificName: string;
     aliases: string[];
-    taxonomy: Taxonomy;
+    taxonomy: TaxonomyI;
     predecessor?: Types.ObjectId;
     successor?: Types.ObjectId[];
     habitat?: string[];

@@ -1,5 +1,5 @@
 import { Document, model, Schema, Types } from "mongoose";
-import { HabitatArea, PopulationStatus, Species, Taxonomy } from "../types/species.types";
+import { HabitatArea, PopulationStatus, Species, TaxonomyI } from "../types/species.types";
 
 export interface SpeciesDocument extends Species, Document { }
 
@@ -15,7 +15,7 @@ const habitatAreaSchema = new Schema<HabitatArea>({
     }
 }, { _id: false });
 
-const taxonomySchema = new Schema<Taxonomy>({
+const taxonomySchema = new Schema<TaxonomyI>({
     kingdom: {
         type: Types.ObjectId,
         ref: "Taxonomy",
