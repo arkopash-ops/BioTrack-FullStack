@@ -24,14 +24,14 @@ export const _getAllTaxonomy = async (req: Request, res: Response, next: NextFun
 
 export const _updateTaxonomy = async (req: Request, res: Response, next: NextFunction) => {
     try {
-        const id = req.params.id;
+        const slug = req.params.slug;
         const data = req.body;
 
-        if (!id || Array.isArray(id)) {
-            throw new Error("Invalid or missing Taxonomy ID");
+        if (!slug || Array.isArray(slug)) {
+            throw new Error("Invalid or missing Taxonomy slug.");
         }
 
-        const updated = await taxonomyService.updateTaxonomy(id, data);
+        const updated = await taxonomyService.updateTaxonomy(slug, data);
 
         if (!updated) {
             return res.status(404).json({ success: false, message: "Taxonomy not found" });
@@ -44,3 +44,22 @@ export const _updateTaxonomy = async (req: Request, res: Response, next: NextFun
 };
 
 
+export const _getTaxonomy = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const slug = req.params.slug;
+
+        if (!slug || Array.isArray(slug)) {
+            return res.status(400).json({ success: false, message: "Invalid or missing Taxonomy slug." });
+        }
+
+        const taxonomy = await taxonomyService.getTaxonomyBySlug(slug);
+
+        if (!taxonomy) {
+            return res.status(404).json({ success: false, message: "Taxonomy not found." });
+        }
+
+        res.status(200).json({ success: true, data: taxonomy });
+    } catch (error: any) {
+        next(error);
+    }
+};

@@ -6,6 +6,7 @@ const router = Router();
 
 router.post("/", protect, taxonomyController._createTaxonomy);
 router.get("/", protect, taxonomyController._getAllTaxonomy);
-router.put("/:id", protect, taxonomyController._updateTaxonomy);
+router.put("/:slug", protect, taxonomyController._updateTaxonomy);
+router.get("/:slug", protect, taxonomyController._getTaxonomy);
 
 export default router;

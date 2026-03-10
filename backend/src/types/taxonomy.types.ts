@@ -11,6 +11,7 @@ export enum Rank {
 
 export interface taxonomy {
     name: string;
+    slug: string;
     rank: Rank;
     parent?: mongoose.ObjectId | null;
     description: string;

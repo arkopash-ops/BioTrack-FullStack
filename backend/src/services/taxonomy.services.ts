@@ -21,11 +21,7 @@ export const getAllTaxonomy = async () => {
 };
 
 
-export const updateTaxonomy = async (id: string, data: Partial<taxonomy>): Promise<TaxonomyDocument | null> => {
-    if (!Types.ObjectId.isValid(id)) {
-        throw new Error("Invalid taxonomy ID");
-    }
-
+export const updateTaxonomy = async (slug: string, data: Partial<taxonomy>): Promise<TaxonomyDocument | null> => {
     if (data.parent) {
         const parentId = typeof data.parent === "string" ? data.parent : data.parent.toString();
         if (!Types.ObjectId.isValid(parentId)) {
@@ -33,11 +29,23 @@ export const updateTaxonomy = async (id: string, data: Partial<taxonomy>): Promi
         }
     }
 
-    const updatedTaxonomy = await TaxonomyModel.findByIdAndUpdate(
-        id,
+    const updated = await TaxonomyModel.findOneAndUpdate(
+        { slug },
         { $set: data },
         { returnDocument: 'after', runValidators: true }
     ).populate('parent', 'name description');
+    return updated;
+};
 
-    return updatedTaxonomy;
+
+export const getTaxonomyBySlug = async (slug: string): Promise<TaxonomyDocument | null> => {
+    if (!slug || typeof slug !== "string") {
+        throw new Error("Invalid or missing Taxonomy slug.");
+    }
+
+    const taxonomy = await TaxonomyModel.findOne({ slug })
+        .populate("parent", "name description")
+        .exec();
+
+    return taxonomy;
 };
