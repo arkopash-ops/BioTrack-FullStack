@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import * as speciesService from "../services/species.servises"
+import { Rank } from "../types/taxonomy.types";
 
 export const _createSpecies = async (req: Request, res: Response, next: NextFunction) => {
     try {
@@ -99,6 +100,51 @@ export const _getSpeciesTree = async (req: Request, res: Response, next: NextFun
             data: tree
         });
     } catch (error: any) {
+        next(error);
+    }
+};
+
+
+export const _searchSpecies = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { q } = req.query;
+
+        const species = await speciesService.searchSpecies(String(q));
+
+        res.status(200).json({
+            success: true,
+            count: species.length,
+            data: species
+        });
+    } catch (error) {
+        next(error);
+    }
+};
+
+
+export const _filterSpecies = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { rank, taxonomyId } = req.query;
+
+        if (!rank || !taxonomyId) {
+            return res.status(400).json({
+                success: false,
+                message: "rank and taxonomyId are required"
+            });
+        }
+
+        const species = await speciesService.filterSpecies(
+            rank as Rank,
+            taxonomyId as string
+        );
+
+        res.status(200).json({
+            success: true,
+            count: species.length,
+            data: species
+        });
+
+    } catch (error) {
         next(error);
     }
 };

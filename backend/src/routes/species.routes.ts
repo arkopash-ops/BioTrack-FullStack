@@ -6,6 +6,18 @@ import { Roles } from "../types/users.types";
 
 const router = Router();
 
+router.get(
+    "/search",
+    protect,
+    speciesController._searchSpecies
+);
+
+router.get(
+    "/filter",
+    protect,
+    speciesController._filterSpecies
+);
+
 router.post(
     "/",
     protect,

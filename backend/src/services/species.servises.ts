@@ -2,6 +2,7 @@ import { Types } from "mongoose";
 import SpeciesModel, { SpeciesDocument } from "../models/species.model";
 import { Species } from "../types/species.types";
 import { SpeciesTreeNode } from "../types/speciesTree.types";
+import { Rank } from "../types/taxonomy.types";
 
 export const createSpecies = async (data: Species): Promise<SpeciesDocument> => {
     const exists = await SpeciesModel.findOne({ scientificName: data.scientificName });
@@ -152,3 +153,50 @@ export const getSpeciesTree = async (slug: string) => {
 
     return buildTree(species);
 }
+
+
+export const searchSpecies = async (query: string) => {
+    if (!query) {
+        throw new Error("Search query is required");
+    }
+
+    const species = await SpeciesModel.find({
+        $or: [
+            { commonName: { $regex: query, $options: "i" } },
+            { scientificName: { $regex: query, $options: "i" } },
+            { aliases: { $regex: query, $options: "i" } }
+        ]
+    })
+        .populate([
+            { path: "taxonomy.kingdom", select: "name" },
+            { path: "taxonomy.phylum", select: "name" },
+            { path: "taxonomy.class", select: "name" },
+            { path: "taxonomy.order", select: "name" },
+            { path: "taxonomy.family", select: "name" },
+            { path: "taxonomy.genus", select: "name" }
+        ]);
+
+    return species;
+}
+
+
+export const filterSpecies = async (rank: Rank, taxonomyId: string): Promise<SpeciesDocument[]> => {
+    if (!Object.values(Rank).includes(rank)) {
+        throw new Error("Invalid taxonomy rank");
+    }
+
+    const filter: any = {};
+    filter[`taxonomy.${rank}`] = taxonomyId;
+
+    const species = await SpeciesModel.find(filter)
+        .populate([
+            { path: "taxonomy.kingdom", select: "name" },
+            { path: "taxonomy.phylum", select: "name" },
+            { path: "taxonomy.class", select: "name" },
+            { path: "taxonomy.order", select: "name" },
+            { path: "taxonomy.family", select: "name" },
+            { path: "taxonomy.genus", select: "name" }
+        ]);
+
+    return species;
+};
