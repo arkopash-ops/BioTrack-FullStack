@@ -149,17 +149,17 @@ export const _filterSpecies = async (req: Request, res: Response, next: NextFunc
     try {
         const { rank, taxonomyId, populationStatus } = req.query;
 
-        if (!rank || !taxonomyId) {
+        if (rank && !Object.values(Rank).includes(rank as Rank)) {
             return res.status(400).json({
                 success: false,
-                message: "rank and taxonomyId are required"
+                message: "Invalid rank"
             });
         }
 
         const species = await speciesService.filterSpecies(
-            rank as Rank,
-            taxonomyId as string,
-            populationStatus as PopulationStatus
+            rank as Rank | undefined,
+            taxonomyId as string | undefined,
+            populationStatus as PopulationStatus | undefined
         );
 
         res.status(200).json({

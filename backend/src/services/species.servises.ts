@@ -230,8 +230,8 @@ export const searchSpecies = async (query: string) => {
 
 
 export const filterSpecies = async (
-    rank: Rank,
-    taxonomyId: string,
+    rank?: Rank,
+    taxonomyId?: string,
     populationStatus?: PopulationStatus
 ): Promise<SpeciesDocument[]> => {
     const filter: any = {};
