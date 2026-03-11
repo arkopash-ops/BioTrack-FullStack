@@ -67,7 +67,6 @@ const speciesSchema = new Schema<SpeciesDocument>({
     },
     slug: {
         type: String,
-        required: true,
         unique: true,
         lowercase: true,
         trim: true
@@ -124,7 +123,7 @@ const speciesSchema = new Schema<SpeciesDocument>({
 speciesSchema.index({ aliases: 1 });
 speciesSchema.index({ habitatArea: "2dsphere" });       // for geo queries
 
-speciesSchema.pre<SpeciesDocument>("validate", function () {
+speciesSchema.pre<SpeciesDocument>("save", function () {
     if (this.isModified("scientificName")) {
         this.slug = slugify(this.scientificName, { lower: true, strict: true });
     }
