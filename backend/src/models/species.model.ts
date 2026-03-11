@@ -1,5 +1,5 @@
 import { Document, model, Schema, Types } from "mongoose";
-import { HabitatArea, PopulationStatus, Species, TaxonomyI } from "../types/species.types";
+import { HabitatArea, LocationType, PopulationStatus, Species, TaxonomyI } from "../types/species.types";
 import slugify from "slugify";
 
 export interface SpeciesDocument extends Species, Document { }
@@ -7,12 +7,12 @@ export interface SpeciesDocument extends Species, Document { }
 const habitatAreaSchema = new Schema<HabitatArea>({
     type: {
         type: String,
-        enum: ['Polygon'],
-        default: 'Polygon'
+        enum: Object.values(LocationType),
+        default: LocationType.POLYGON,
     },
     coordinates: {
-        type: [[[Number]]],
-        required: false,
+        type: [[[[Number]]]],
+        require: false,
     }
 }, { _id: false });
 

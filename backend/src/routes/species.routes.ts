@@ -18,6 +18,18 @@ router.get(
     speciesController._filterSpecies
 );
 
+router.get(
+    "/map",
+    protect,
+    speciesController._getSpeciesMap
+);
+
+router.get(
+    "/:slug/location",
+    protect,
+    speciesController._getSpeciesHabitat
+);
+
 router.post(
     "/",
     protect,

@@ -1,8 +1,13 @@
 import { Types } from 'mongoose';
 
+export enum LocationType {
+    POLYGON = "Polygon",
+    MULTIPOLYGON = "MultiPolygon"
+}
+
 export interface HabitatArea {
-    type: 'Polygon';
-    coordinates: number[][][];
+    type: LocationType;
+    coordinates: number[][][] | number[][][][];
 }
 
 export enum PopulationStatus {

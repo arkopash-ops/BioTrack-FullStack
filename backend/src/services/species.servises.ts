@@ -1,6 +1,6 @@
 import { Types } from "mongoose";
 import SpeciesModel, { SpeciesDocument } from "../models/species.model";
-import { Species } from "../types/species.types";
+import { PopulationStatus, Species } from "../types/species.types";
 import { SpeciesTreeNode } from "../types/speciesTree.types";
 import { Rank } from "../types/taxonomy.types";
 
@@ -180,13 +180,24 @@ export const searchSpecies = async (query: string) => {
 }
 
 
-export const filterSpecies = async (rank: Rank, taxonomyId: string): Promise<SpeciesDocument[]> => {
-    if (!Object.values(Rank).includes(rank)) {
-        throw new Error("Invalid taxonomy rank");
+export const filterSpecies = async (
+    rank: Rank,
+    taxonomyId: string,
+    populationStatus?: PopulationStatus
+): Promise<SpeciesDocument[]> => {
+    const filter: any = {};
+
+    if (rank && taxonomyId) {
+        if (!Object.values(Rank).includes(rank)) {
+            throw new Error("Invalid taxonomy rank");
+        }
+
+        filter[`taxonomy.${rank}`] = taxonomyId;
     }
 
-    const filter: any = {};
-    filter[`taxonomy.${rank}`] = taxonomyId;
+    if (populationStatus) {
+        filter.populationStatus = populationStatus;
+    }
 
     const species = await SpeciesModel.find(filter)
         .populate([
@@ -197,6 +208,35 @@ export const filterSpecies = async (rank: Rank, taxonomyId: string): Promise<Spe
             { path: "taxonomy.family", select: "name" },
             { path: "taxonomy.genus", select: "name" }
         ]);
+
+    return species;
+};
+
+
+export const getSpeciesMap = async () => {
+    const species = await SpeciesModel.find(
+        { "habitatArea.coordinates.0": { $exists: true } },
+        {
+            commonName: 1,
+            scientificName: 1,
+            slug: 1,
+            habitatArea: 1
+        }
+    );
+
+    return species;
+};
+
+
+export const getSpeciesHabitat = async (slug: string) => {
+    const species = await SpeciesModel.findOne(
+        { slug },
+        { commonName: 1, scientificName: 1, habitatArea: 1 }
+    );
+
+    if (!species) {
+        throw new Error("Species not found");
+    }
 
     return species;
 };
