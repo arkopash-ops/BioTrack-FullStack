@@ -1,6 +1,7 @@
 import { Types } from "mongoose";
 import SpeciesModel, { SpeciesDocument } from "../models/species.model";
 import { Species } from "../types/species.types";
+import { SpeciesTreeNode } from "../types/speciesTree.types";
 
 export const createSpecies = async (data: Species): Promise<SpeciesDocument> => {
     const exists = await SpeciesModel.findOne({ scientificName: data.scientificName });
@@ -118,3 +119,36 @@ export const updateSpecies = async (slug: string, data: Partial<Species>): Promi
         { path: "successor", select: "scientificName commonName" }
     ]);
 };
+
+
+export const getSpeciesTree = async (slug: string) => {
+    const species = await SpeciesModel.findOne({ slug });
+
+    if (!species) {
+        throw new Error("Species not found");
+    }
+
+    const buildTree = async (species: SpeciesDocument): Promise<SpeciesTreeNode> => {
+        const populatedSpecies = await species.populate({
+            path: "successor",
+            select: "scientificName commonName successor"
+        });
+
+        const successors = Array.isArray(populatedSpecies.successor)
+            ? populatedSpecies.successor
+            : [];
+
+        const children = await Promise.all(
+            successors.map((child: any) => buildTree(child))
+        );
+
+        return {
+            _id: species._id,
+            scientificName: species.scientificName,
+            commonName: species.commonName,
+            successor: children
+        };
+    };
+
+    return buildTree(species);
+}

@@ -12,7 +12,6 @@ const taxonomySchema = new Schema<TaxonomyDocument>({
     },
     slug: {
         type: String,
-        required: true,
         unique: true,
         lowercase: true,
         trim: true

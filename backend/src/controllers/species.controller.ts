@@ -82,3 +82,23 @@ export const _updateSpecies = async (req: Request, res: Response, next: NextFunc
         next(error);
     }
 };
+
+
+export const _getSpeciesTree = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { slug } = req.params;
+
+        if (!slug || Array.isArray(slug)) {
+            return res.status(400).json({ success: false, message: "Invalid or missing Species slug." });
+        }
+
+        const tree = await speciesService.getSpeciesTree(slug);
+
+        res.status(200).json({
+            success: true,
+            data: tree
+        });
+    } catch (error: any) {
+        next(error);
+    }
+};
