@@ -86,6 +86,28 @@ export const _updateSpecies = async (req: Request, res: Response, next: NextFunc
 };
 
 
+export const _deleteSpecies = async (req: Request, res: Response, next: NextFunction) => {
+    try {
+        const { slug } = req.params;
+
+        if (!slug || Array.isArray(slug)) {
+            return res.status(400).json({ success: false, message: "Invalid or missing Species slug." });
+        }
+
+        const species = await speciesService.deleteSpecies(slug);
+
+        res.status(200).json({
+            success: true,
+            message: "Species deleted successfully",
+            data: species
+        });
+
+    } catch (error) {
+        next(error);
+    }
+};
+
+
 export const _getSpeciesTree = async (req: Request, res: Response, next: NextFunction) => {
     try {
         const { slug } = req.params;

@@ -56,6 +56,13 @@ router.patch(
     speciesController._updateSpecies
 );
 
+router.delete(
+    "/:slug",
+    protect,
+    authorizedRole(Roles.RESEARCHER),
+    speciesController._deleteSpecies
+);
+
 router.get(
     "/tree/:slug",
     protect,

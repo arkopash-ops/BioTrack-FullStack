@@ -122,6 +122,55 @@ export const updateSpecies = async (slug: string, data: Partial<Species>): Promi
 };
 
 
+export const deleteSpecies = async (slug: string) => {
+    const species = await SpeciesModel.findOne({ slug });
+
+    if (!species) {
+        throw new Error("Species not found");
+    }
+
+    const predecessorId = species.predecessor;
+    const successors = species.successor || [];
+
+    // predecessor exists connect it with successors
+    if (predecessorId && successors.length > 0) {
+
+        // Add successors to predecessor
+        await SpeciesModel.findByIdAndUpdate(
+            predecessorId,
+            { $addToSet: { successor: { $each: successors } } }
+        );
+
+        // Update successors predecessor
+        await SpeciesModel.updateMany(
+            { _id: { $in: successors } },
+            { $set: { predecessor: predecessorId } }
+        );
+    }
+
+    // no predecessor than become root nod
+    if (!predecessorId && successors.length > 0) {
+
+        await SpeciesModel.updateMany(
+            { _id: { $in: successors } },
+            { $unset: { predecessor: "" } }
+        );
+    }
+
+    // remove this species from its predecessor successor list
+    if (predecessorId) {
+        await SpeciesModel.findByIdAndUpdate(
+            predecessorId,
+            { $pull: { successor: species._id } }
+        );
+    }
+
+    await SpeciesModel.findByIdAndDelete(species._id);
+
+    return species;
+};
+
+
 export const getSpeciesTree = async (slug: string) => {
     const species = await SpeciesModel.findOne({ slug });
 
