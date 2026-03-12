@@ -1,7 +1,12 @@
 import { Request, Response, NextFunction } from "express";
 import * as taxonomyService from "../services/taxonomy.services"
 
-export const _createTaxonomy = async (req: Request, res: Response, next: NextFunction) => {
+export const _createTaxonomy = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+
+) => {
     try {
         const data = req.body;
         const taxonomy = await taxonomyService.createTaxonomy(data);
@@ -12,7 +17,12 @@ export const _createTaxonomy = async (req: Request, res: Response, next: NextFun
 };
 
 
-export const _getAllTaxonomy = async (req: Request, res: Response, next: NextFunction) => {
+export const _getAllTaxonomy = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+
+) => {
     try {
         const taxonomies = await taxonomyService.getAllTaxonomy();
         res.status(200).json({ success: true, data: taxonomies });
@@ -22,7 +32,12 @@ export const _getAllTaxonomy = async (req: Request, res: Response, next: NextFun
 };
 
 
-export const _updateTaxonomy = async (req: Request, res: Response, next: NextFunction) => {
+export const _updateTaxonomy = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+
+) => {
     try {
         const slug = req.params.slug;
         const data = req.body;
@@ -44,7 +59,11 @@ export const _updateTaxonomy = async (req: Request, res: Response, next: NextFun
 };
 
 
-export const _getTaxonomy = async (req: Request, res: Response, next: NextFunction) => {
+export const _getTaxonomy = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
     try {
         const slug = req.params.slug;
 
@@ -60,6 +79,31 @@ export const _getTaxonomy = async (req: Request, res: Response, next: NextFuncti
 
         res.status(200).json({ success: true, data: taxonomy });
     } catch (error: any) {
+        next(error);
+    }
+};
+
+
+export const _getTaxonomyTree = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const { slug } = req.params;
+
+        if (!slug || Array.isArray(slug)) {
+            return res.status(400).json({ success: false, message: "Invalid or missing Taxonomy slug." });
+        }
+
+        const tree = await taxonomyService.getTaxonomyTree(slug);
+
+        res.status(200).json({
+            success: true,
+            data: tree
+        });
+
+    } catch (error) {
         next(error);
     }
 };

@@ -35,4 +35,10 @@ router.get(
     taxonomyController._getTaxonomy
 );
 
+router.get(
+    "/tree/:slug",
+    protect,
+    taxonomyController._getTaxonomyTree
+);
+
 export default router;

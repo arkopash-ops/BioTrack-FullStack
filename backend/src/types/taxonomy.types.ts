@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import { Types } from "mongoose";
 
 export enum Rank {
     KINGDOM = 'kingdom',
@@ -13,6 +13,6 @@ export interface taxonomy {
     name: string;
     slug: string;
     rank: Rank;
-    parent?: mongoose.ObjectId | null;
+    parent?: Types.ObjectId | null;
     description: string;
 }

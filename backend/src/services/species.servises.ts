@@ -1,4 +1,4 @@
-import { HydratedDocument, Types } from "mongoose";
+import { Types } from "mongoose";
 import SpeciesModel, { SpeciesDocument } from "../models/species.model";
 import { PopulationStatus, Species, SpeciesImage } from "../types/species.types";
 import { SpeciesTreeNode } from "../types/speciesTree.types";
