@@ -1,5 +1,11 @@
 import { Document, model, Schema, Types } from "mongoose";
-import { HabitatArea, LocationType, PopulationStatus, Species, TaxonomyI } from "../types/species.types";
+import {
+    HabitatArea,
+    LocationType,
+    PopulationStatus,
+    Species,
+    TaxonomyI
+} from "../types/species.types";
 import slugify from "slugify";
 
 export interface SpeciesDocument extends Species, Document { }
@@ -106,7 +112,10 @@ const speciesSchema = new Schema<SpeciesDocument>({
         default: PopulationStatus.LEAST_CONCERN,
     },
     images: {
-        type: [String],
+        type: [{
+            url: String,
+            public_id: String
+        }],
         default: [],
     },
     description: { type: String },

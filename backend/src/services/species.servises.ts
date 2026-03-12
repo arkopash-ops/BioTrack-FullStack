@@ -1,8 +1,9 @@
 import { Types } from "mongoose";
 import SpeciesModel, { SpeciesDocument } from "../models/species.model";
-import { PopulationStatus, Species } from "../types/species.types";
+import { PopulationStatus, Species, SpeciesImage } from "../types/species.types";
 import { SpeciesTreeNode } from "../types/speciesTree.types";
 import { Rank } from "../types/taxonomy.types";
+import { deleteImageFromCloudinary, uploadImageBuffer } from "./cloudinary.service";
 
 export const createSpecies = async (data: Species): Promise<SpeciesDocument> => {
     const exists = await SpeciesModel.findOne({ scientificName: data.scientificName });
@@ -60,15 +61,49 @@ export const getAllSpecies = async () => {
 };
 
 
+export const getRelatedSpecies = async (slug: string) => {
+    const species = await SpeciesModel.findOne({ slug });
+
+    if (!species) {
+        throw new Error("Species not found");
+    }
+
+    const genus = species.taxonomy?.genus;
+    const family = species.taxonomy?.family;
+
+    const query: any = {
+        _id: { $ne: species._id }       // exclude the _id of searched species
+    };
+
+    if (genus) {
+        query["taxonomy.genus"] = genus;
+    } else if (family) {
+        query["taxonomy.family"] = family;
+    }
+
+    const relatedSpecies = await SpeciesModel.find(query)
+        .limit(10)
+        .select("commonName scientificName slug taxonomy populationStatus images");
+
+    return relatedSpecies;
+}
+
+
 export const updateSpecies = async (slug: string, data: Partial<Species>): Promise<SpeciesDocument> => {
     const species = await SpeciesModel.findOne({ slug });
     if (!species) throw new Error("Species not found");
 
-    const oldPredecessor = species.predecessor?.toString();
-    const newPredecessor = data.predecessor?.toString();
+    const oldPredecessor = species.predecessor?.toString() || null;
+    const newPredecessor = data.predecessor?.toString() || null;
+
+    const oldSuccessors = (species.successor || []).map(s => s.toString());
+    const newSuccessors = data.successor?.map(s => s.toString()) || null;
 
     // Update species fields
-    Object.assign(species, data);
+    Object.keys(data).forEach((key) => {
+        (species as any)[key] = (data as any)[key];
+    });
+
     await species.save();
 
     // Handle predecessor change
@@ -87,23 +122,22 @@ export const updateSpecies = async (slug: string, data: Partial<Species>): Promi
     }
 
     // Handle successor cahnge
-    if (data.successor && Array.isArray(data.successor)) {
-        // Pull this species from old successors that were removed
-        const oldSuccessors = (species.successor || []).map(s => new Types.ObjectId(s));
-        const removedSuccessors = oldSuccessors.filter(s => !data.successor?.includes(s));
+    if (newSuccessors) {
+        const removedSuccessors = oldSuccessors.filter(s => !newSuccessors?.includes(s));
+        const addedSuccessors = newSuccessors.filter(s => !oldSuccessors.includes(s));
 
+        // Remove predecessor from removed successors
         if (removedSuccessors.length) {
             await SpeciesModel.updateMany(
-                { _id: { $in: removedSuccessors } },
+                { _id: { $in: removedSuccessors.map(id => new Types.ObjectId(id)) } },
                 { $unset: { predecessor: "" } } // remove predecessor link
             );
         }
 
         // Update new successors to set predecessor
-        const addedSuccessors = data.successor.filter(s => !oldSuccessors.includes(s));
         if (addedSuccessors.length) {
             await SpeciesModel.updateMany(
-                { _id: { $in: addedSuccessors } },
+                { _id: { $in: addedSuccessors.map(id => new Types.ObjectId(id)) } },
                 { $set: { predecessor: species._id } }
             );
         }
@@ -119,6 +153,33 @@ export const updateSpecies = async (slug: string, data: Partial<Species>): Promi
         { path: "predecessor", select: "scientificName commonName" },
         { path: "successor", select: "scientificName commonName" }
     ]);
+};
+
+
+export const updateSpeciesHabitat = async (
+    slug: string,
+    type: "Polygon" | "MultiPolygon",
+    coordinates: number[][][][] | number[][][][][]
+) => {
+
+    if (!["Polygon", "MultiPolygon"].includes(type)) {
+        throw new Error("Invalid GeoJSON type. Use Polygon or MultiPolygon.");
+    }
+
+    const species = await SpeciesModel.findOne({ slug });
+
+    if (!species) {
+        throw new Error("Species not found");
+    }
+
+    species.habitatArea = {
+        type,
+        coordinates
+    } as any;
+
+    await species.save();
+
+    return species;
 };
 
 
@@ -288,4 +349,86 @@ export const getSpeciesHabitat = async (slug: string) => {
     }
 
     return species;
+};
+
+
+export const groupSpeciesForMap = async (query: string) => {
+    if (!query) {
+        throw new Error("Search query is required");
+    }
+
+    const relatedSpecies = await SpeciesModel.find({
+        $or: [
+            { commonName: { $regex: query, $options: "i" } },
+            { scientificName: { $regex: query, $options: "i" } },
+            { aliases: { $regex: query, $options: "i" } }
+        ]
+    }).select("commonName scientificName slug habitatArea");
+
+    return relatedSpecies;
+};
+
+
+export const uploadSpeciesImages = async (
+    slug: string,
+    files: Express.Multer.File[]
+) => {
+
+    const species = await SpeciesModel.findOne({ slug });
+
+    if (!species) {
+        throw new Error("Species not found");
+    }
+
+    const uploadedImages: SpeciesImage[] = [];
+
+    for (const file of files) {
+
+        const result = await uploadImageBuffer(
+            file.buffer,
+            `${Date.now()}-${file.originalname}`
+        );
+
+        uploadedImages.push(result);
+    }
+
+    species.images = species.images || [];
+    species.images.push(...uploadedImages);
+
+    await species.save();
+
+    return species.images;
+};
+
+
+export const deleteSpeciesImage = async (
+    slug: string,
+    publicId: string
+) => {
+
+    const species = await SpeciesModel.findOne({ slug });
+
+    if (!species) {
+        throw new Error("Species not found");
+    }
+
+    const imageExists = species.images?.find(
+        img => img.public_id === publicId
+    );
+
+    if (!imageExists) {
+        throw new Error("Image not found for this species");
+    }
+
+    // delete from cloudinary
+    await deleteImageFromCloudinary(publicId);
+
+    // remove from database
+    species.images = species.images?.filter(
+        img => img.public_id !== publicId
+    );
+
+    await species.save();
+
+    return species.images;
 };

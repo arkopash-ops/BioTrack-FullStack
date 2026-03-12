@@ -3,8 +3,25 @@ import * as speciesController from "../controllers/species.controller";
 import { protect } from "../middlewares/auth.middleware";
 import { authorizedRole } from "../middlewares/role.middleware";
 import { Roles } from "../types/users.types";
+import { uploadSpeciesImages } from "../middlewares/uploadSpeciesImages.middleware";
 
 const router = Router();
+
+// image
+router.post(
+    "/:slug/images",
+    protect,
+    uploadSpeciesImages.array("images", 5),
+    speciesController._uploadSpeciesImages
+);
+
+router.delete(
+    "/:slug/images",
+    protect,
+    speciesController._deleteSpeciesImage
+);
+//
+
 
 router.get(
     "/search",
@@ -49,11 +66,24 @@ router.get(
     speciesController._getAllSpecies
 );
 
+router.get(
+    "/:slug/related",
+    protect,
+    speciesController._getRelatedSpecies
+);
+
 router.patch(
     "/:slug",
     protect,
     authorizedRole(Roles.RESEARCHER),
     speciesController._updateSpecies
+);
+
+router.patch(
+    "/:slug/habitat",
+    protect,
+    authorizedRole(Roles.RESEARCHER),
+    speciesController._updateSpeciesHabitat
 );
 
 router.delete(
@@ -68,5 +98,13 @@ router.get(
     protect,
     speciesController._getSpeciesTree
 );
+
+router.get(
+    "/map/search",
+    protect,
+    speciesController._groupSpeciesForMap
+);
+
+
 
 export default router;

@@ -1,5 +1,15 @@
 import { Types } from 'mongoose';
 
+export interface TaxonomyI {
+    kingdom: Types.ObjectId;
+    phylum?: Types.ObjectId;
+    class?: Types.ObjectId;
+    order?: Types.ObjectId;
+    family?: Types.ObjectId;
+    genus?: Types.ObjectId;
+    species?: Types.ObjectId;
+}
+
 export enum LocationType {
     POLYGON = "Polygon",
     MULTIPOLYGON = "MultiPolygon"
@@ -18,14 +28,9 @@ export enum PopulationStatus {
     EXTINCT = "Extinct"
 }
 
-export interface TaxonomyI {
-    kingdom: Types.ObjectId;
-    phylum?: Types.ObjectId;
-    class?: Types.ObjectId;
-    order?: Types.ObjectId;
-    family?: Types.ObjectId;
-    genus?: Types.ObjectId;
-    species?: Types.ObjectId;
+export interface SpeciesImage {
+    url: string;
+    public_id: string;
 }
 
 export interface Species {
@@ -41,7 +46,7 @@ export interface Species {
     firstDiscovery?: Date;
     lifespan?: string;
     populationStatus?: PopulationStatus;
-    images?: string[];
+    images?: SpeciesImage[];
     description?: string;
     createdBy?: Types.ObjectId;
     updatedBy?: Types.ObjectId;
