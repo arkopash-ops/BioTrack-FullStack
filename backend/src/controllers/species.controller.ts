@@ -138,18 +138,31 @@ export const _updateSpeciesHabitat = async (
     next: NextFunction
 ) => {
     try {
-
         const { slug } = req.params;
         if (!slug || Array.isArray(slug)) {
             return res.status(400).json({ success: false, message: "Invalid or missing Species slug." });
         }
 
-        const { type, coordinates } = req.body;
+        const { habitatArea } = req.body;
+
+        if (!habitatArea || !["Polygon", "MultiPolygon"].includes(habitatArea.type)) {
+            return res.status(400).json({ 
+                success: false, 
+                message: "Invalid GeoJSON type. Use Polygon or MultiPolygon." 
+            });
+        }
+
+        if (!habitatArea.coordinates) {
+            return res.status(400).json({ 
+                success: false, 
+                message: "Missing coordinates in habitatArea." 
+            });
+        }
 
         const species = await speciesService.updateSpeciesHabitat(
             slug,
-            type,
-            coordinates
+            habitatArea.type,
+            habitatArea.coordinates
         );
 
         res.status(200).json({

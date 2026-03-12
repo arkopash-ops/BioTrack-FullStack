@@ -1,4 +1,4 @@
-import { Types } from "mongoose";
+import { HydratedDocument, Types } from "mongoose";
 import SpeciesModel, { SpeciesDocument } from "../models/species.model";
 import { PopulationStatus, Species, SpeciesImage } from "../types/species.types";
 import { SpeciesTreeNode } from "../types/speciesTree.types";
@@ -239,6 +239,18 @@ export const getSpeciesTree = async (slug: string) => {
         throw new Error("Species not found");
     }
 
+    let root: SpeciesDocument = species;
+
+    while (root.predecessor) {
+        const parent = await SpeciesModel
+            .findById(root.predecessor)
+            .select("scientificName commonName predecessor successor");
+
+        if (!parent) break;
+
+        root = parent as SpeciesDocument;
+    }
+
     const buildTree = async (species: SpeciesDocument): Promise<SpeciesTreeNode> => {
         const populatedSpecies = await species.populate({
             path: "successor",
@@ -261,7 +273,7 @@ export const getSpeciesTree = async (slug: string) => {
         };
     };
 
-    return buildTree(species);
+    return buildTree(root);
 }
 
 
