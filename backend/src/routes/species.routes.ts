@@ -80,7 +80,7 @@ router.get(
 router.patch(
     "/:slug",
     protect,
-    authorizedRole(Roles.RESEARCHER),
+    authorizedRole(Roles.ADMIN, Roles.RESEARCHER),
     speciesController._updateSpecies
 );
 

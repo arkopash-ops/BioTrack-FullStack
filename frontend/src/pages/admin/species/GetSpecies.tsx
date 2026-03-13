@@ -14,6 +14,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import axios from "axios";
 import SpeciesHabitatMap from "../../../components/SpeciesHabitatMap";
 import TreeChart from "../../../components/TreeChart";
+import SpeciesCard from "../../../components/SpeciesCard";
 import type { TreeNode as TaxonomyTreeNode } from "../../../components/TreeChart";
 
 type SpeciesImage = {
@@ -51,6 +52,19 @@ type SpeciesDetails = {
   updatedAt?: string;
 };
 
+type RelatedSpecies = {
+  _id: string;
+  commonName: string;
+  scientificName: string;
+  slug: string;
+  populationStatus?: string;
+  taxonomy?: {
+    genus?: string | { _id?: string; name?: string } | null;
+    family?: string | { _id?: string; name?: string } | null;
+  };
+  images?: SpeciesImage[];
+};
+
 const formatDate = (value?: string | null) => {
   if (!value) return "Not available";
   const date = new Date(value);
@@ -76,6 +90,9 @@ const GetSpecies = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [imageIndex, setImageIndex] = useState(0);
+  const [relatedSpecies, setRelatedSpecies] = useState<RelatedSpecies[]>([]);
+  const [relatedLoading, setRelatedLoading] = useState(false);
+  const [relatedError, setRelatedError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchSpecies = async () => {
@@ -107,6 +124,44 @@ const GetSpecies = () => {
     };
 
     fetchSpecies();
+  }, [slug]);
+
+  useEffect(() => {
+    if (!slug) return;
+
+    let isMounted = true;
+
+    const fetchRelatedSpecies = async () => {
+      setRelatedLoading(true);
+      setRelatedError(null);
+      try {
+        const res = await axios.get(
+          `http://localhost:8080/api/species/${slug}/related`,
+          { withCredentials: true },
+        );
+        if (!isMounted) return;
+        if (res.data.success) {
+          setRelatedSpecies(res.data.data || []);
+        } else {
+          setRelatedError(res.data.message || "Failed to load related species.");
+        }
+      } catch (err) {
+        console.error("Error fetching related species:", err);
+        if (isMounted) {
+          setRelatedError("Failed to load related species.");
+        }
+      } finally {
+        if (isMounted) {
+          setRelatedLoading(false);
+        }
+      }
+    };
+
+    fetchRelatedSpecies();
+
+    return () => {
+      isMounted = false;
+    };
   }, [slug]);
 
   const activeImage = useMemo(
@@ -372,6 +427,20 @@ const GetSpecies = () => {
                       {species.description}
                     </Typography>
                   ) : null}
+                  <Button
+                    variant="contained"
+                    onClick={() => navigate(`/admin/species/${species.slug}/evolution-tree`)}
+                    sx={{
+                      mt: 2,
+                      alignSelf: "flex-start",
+                      textTransform: "none",
+                      fontWeight: 600,
+                      backgroundColor: "#2f7d4b",
+                      "&:hover": { backgroundColor: "#3b9960" },
+                    }}
+                  >
+                    See Evolution Tree
+                  </Button>
                 </Stack>
               </Stack>
 
@@ -501,6 +570,54 @@ const GetSpecies = () => {
                   scientificName={species.scientificName}
                   populationStatus={species.populationStatus}
                 />
+              </Stack>
+
+              <Stack spacing={2}>
+                <Typography
+                  variant="h6"
+                  sx={{ color: "#e6f5ec", fontWeight: "bold" }}
+                >
+                  Related Species
+                </Typography>
+                {relatedLoading ? (
+                  <Stack spacing={2}>
+                    <Skeleton variant="rounded" height={180} sx={{ bgcolor: "rgba(109,220,139,0.12)" }} />
+                    <Skeleton variant="rounded" height={180} sx={{ bgcolor: "rgba(109,220,139,0.12)" }} />
+                  </Stack>
+                ) : relatedError ? (
+                  <Typography sx={{ color: "#f1b7b7" }}>{relatedError}</Typography>
+                ) : relatedSpecies.length === 0 ? (
+                  <Typography sx={{ color: "#b7d7c4" }}>
+                    No related species found.
+                  </Typography>
+                ) : (
+                  <Box
+                    sx={{
+                      columnCount: { xs: 1, sm: 2, md: 3 },
+                      columnGap: 16,
+                    }}
+                  >
+                    {relatedSpecies.map((item) => (
+                      <Box
+                        key={item._id}
+                        sx={{
+                          breakInside: "avoid",
+                          mb: 2,
+                          display: "inline-block",
+                          width: "100%",
+                        }}
+                      >
+                        <SpeciesCard
+                          commonName={item.commonName}
+                          scientificName={item.scientificName}
+                          status={item.populationStatus || "Unknown"}
+                          imageUrl={item.images?.[0]?.url ?? null}
+                          onClick={() => navigate(`/admin/species/${item.slug}`)}
+                        />
+                      </Box>
+                    ))}
+                  </Box>
+                )}
               </Stack>
 
             </Stack>

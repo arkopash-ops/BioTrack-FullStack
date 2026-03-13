@@ -270,6 +270,11 @@ const Species = () => {
                         <Button
                           size="small"
                           variant="contained"
+                          onClick={() => {
+                            if (item.slug) {
+                              navigate(`/admin/species/${item.slug}/edit`);
+                            }
+                          }}
                           sx={{
                             textTransform: "none",
                             backgroundColor: "#2f7d4b",

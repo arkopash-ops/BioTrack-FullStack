@@ -241,7 +241,9 @@ export const deleteSpecies = async (slug: string) => {
 
 
 export const getSpeciesTree = async (slug: string) => {
-    const species = await SpeciesModel.findOne({ slug });
+    const species = await SpeciesModel
+        .findOne({ slug })
+        .select("scientificName commonName slug predecessor successor images");
 
     if (!species) {
         throw new Error("Species not found");
@@ -252,7 +254,7 @@ export const getSpeciesTree = async (slug: string) => {
     while (root.predecessor) {
         const parent = await SpeciesModel
             .findById(root.predecessor)
-            .select("scientificName commonName predecessor successor");
+            .select("scientificName commonName slug predecessor successor images");
 
         if (!parent) break;
 
@@ -262,7 +264,7 @@ export const getSpeciesTree = async (slug: string) => {
     const buildTree = async (species: SpeciesDocument): Promise<SpeciesTreeNode> => {
         const populatedSpecies = await species.populate({
             path: "successor",
-            select: "scientificName commonName successor"
+            select: "scientificName commonName slug successor images"
         });
 
         const successors = Array.isArray(populatedSpecies.successor)
@@ -277,6 +279,8 @@ export const getSpeciesTree = async (slug: string) => {
             _id: species._id,
             scientificName: species.scientificName,
             commonName: species.commonName,
+            slug: (species as any).slug,
+            images: (species as any).images ?? [],
             successor: children
         };
     };

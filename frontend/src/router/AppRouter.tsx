@@ -13,6 +13,8 @@ import AdminUsers from "../pages/admin/Users";
 import AdminSpecies from "../pages/admin/Species";
 import AdminTaxonomy from "../pages/admin/Taxonomy";
 import AdminGetSpecies from "../pages/admin/species/GetSpecies";
+import AdminSpeciesEvolutionTree from "../pages/admin/species/SpeciesEvolutionTree";
+import AdminEditSpecies from "../pages/admin/species/EditSpecies";
 
 import GetProfile from "../pages/admin/profile/GetProfile";
 import EditProfile from "../pages/admin/profile/EditProfile";
@@ -57,6 +59,22 @@ const AppRouter = () => {
             element={
               <ProtectedRoute>
                 <AdminGetSpecies />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/species/:slug/edit"
+            element={
+              <ProtectedRoute>
+                <AdminEditSpecies />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/species/:slug/evolution-tree"
+            element={
+              <ProtectedRoute>
+                <AdminSpeciesEvolutionTree />
               </ProtectedRoute>
             }
           />
