@@ -82,7 +82,7 @@ const GetProfile = () => {
   const address = profile.addresses
     ? `${profile.addresses.street || ""}, ${profile.addresses.city || ""}, ${
         profile.addresses.state || ""
-      }, ${profile.addresses.zipCode || ""}, ${profile.addresses.country || ""}`
+      }, ${profile.addresses.zip || ""}, ${profile.addresses.country || ""}`
     : "-";
 
   return (

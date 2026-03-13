@@ -4,17 +4,37 @@ import axios from "axios";
 import type { DashboardUser as User } from "../../interfaces";
 import BarChart from "../../components/BarChart";
 import PieChart from "../../components/PieChart";
+import AllSpeciesHabitatMap from "../../components/AllSpeciesHabitatMap";
 
 interface SpeciesItem {
   _id: string;
   populationStatus?: string;
 }
 
+interface SpeciesMapItem {
+  _id: string;
+  commonName?: string;
+  scientificName?: string;
+  slug?: string;
+  habitatArea?: {
+    type?: "Polygon" | "MultiPolygon" | string;
+    coordinates?: number[][][][] | number[][][] | null;
+  };
+}
+
+interface TaxonomyItem {
+  _id: string;
+}
+
 const AdminDashboard = () => {
   const [users, setUsers] = useState<User[]>([]);
   const [species, setSpecies] = useState<SpeciesItem[]>([]);
+  const [speciesMap, setSpeciesMap] = useState<SpeciesMapItem[]>([]);
+  const [taxonomies, setTaxonomies] = useState<TaxonomyItem[]>([]);
   const [loadingUsers, setLoadingUsers] = useState(true);
   const [loadingSpecies, setLoadingSpecies] = useState(true);
+  const [loadingSpeciesMap, setLoadingSpeciesMap] = useState(true);
+  const [loadingTaxonomies, setLoadingTaxonomies] = useState(true);
 
   useEffect(() => {
     const fetchUsers = async () => {
@@ -50,8 +70,40 @@ const AdminDashboard = () => {
       }
     };
 
+    const fetchTaxonomies = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/api/taxonomy", {
+          withCredentials: true,
+        });
+        if (res.data.success) {
+          setTaxonomies(res.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching taxonomies:", error);
+      } finally {
+        setLoadingTaxonomies(false);
+      }
+    };
+
+    const fetchSpeciesMap = async () => {
+      try {
+        const res = await axios.get("http://localhost:8080/api/species/map", {
+          withCredentials: true,
+        });
+        if (res.data.success) {
+          setSpeciesMap(res.data.data);
+        }
+      } catch (error) {
+        console.error("Error fetching species map:", error);
+      } finally {
+        setLoadingSpeciesMap(false);
+      }
+    };
+
     fetchUsers();
     fetchSpecies();
+    fetchSpeciesMap();
+    fetchTaxonomies();
   }, []);
 
   const usersByRole = users.reduce(
@@ -92,6 +144,7 @@ const AdminDashboard = () => {
   const chartColors = ["#1f6b3a", "#2f9e5b", "#3bbf7a", "#7fc97f", "#c9b458"];
   const speciesStatuses = Object.entries(speciesByStatus);
   const speciesTotal = species.length;
+  const taxonomyTotal = taxonomies.length;
   const maxRoleCount = Math.max(researcherCount, visitorCount, 1);
   const roleItems = [
     { label: "Researchers", value: researcherCount },
@@ -141,6 +194,14 @@ const AdminDashboard = () => {
                 <Typography sx={{ color: "#b7d7c4" }}>Loading...</Typography>
               ) : (
                 <Typography sx={cardValueSx}>{speciesTotal}</Typography>
+              )}
+            </Box>
+            <Box flex={1}>
+              <Typography sx={cardTitleSx}>Taxonomy</Typography>
+              {loadingTaxonomies ? (
+                <Typography sx={{ color: "#b7d7c4" }}>Loading...</Typography>
+              ) : (
+                <Typography sx={cardValueSx}>{taxonomyTotal}</Typography>
               )}
             </Box>
           </Stack>
@@ -199,6 +260,28 @@ const AdminDashboard = () => {
             )}
           </Paper>
         </Stack>
+
+        <Paper sx={{ ...glassCardSx, p: 3 }}>
+          <Stack spacing={2}>
+            <Stack direction="row" spacing={2} alignItems="center">
+              <Typography variant="h6" sx={{ color: "#e6f5ec" }}>
+                Species Habitat Map
+              </Typography>
+              <Chip
+                label={`${speciesMap.length} habitats`}
+                size="small"
+                color="success"
+                variant="outlined"
+                sx={{ color: "#b7d7c4", borderColor: "rgba(109,220,139,0.45)" }}
+              />
+            </Stack>
+            {loadingSpeciesMap ? (
+              <Typography sx={{ color: "#b7d7c4" }}>Loading map...</Typography>
+            ) : (
+              <AllSpeciesHabitatMap items={speciesMap} height={360} />
+            )}
+          </Stack>
+        </Paper>
       </Stack>
     </Box>
   );

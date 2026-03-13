@@ -41,7 +41,7 @@ export interface GetProfileData {
     street?: string;
     city?: string;
     state?: string;
-    zipCode?: string;
+    zip?: string;
     country?: string;
   };
   socialLinks?: {

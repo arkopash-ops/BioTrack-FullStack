@@ -177,7 +177,7 @@ const EditProfile: React.FC = () => {
 
       if (res.data.success) {
         alert("Profile updated successfully!");
-        navigate("/admin/dashboard");
+        navigate("/admin/users");
       }
     } catch (error) {
       console.error(error);

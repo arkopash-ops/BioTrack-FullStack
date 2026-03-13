@@ -11,6 +11,7 @@ import {
   Divider,
   Button,
 } from "@mui/material";
+import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Grid from "@mui/system/Grid";
 import SpeciesCard from "../../components/SpeciesCard";
@@ -20,12 +21,14 @@ interface SpeciesItem {
   _id: string;
   commonName: string;
   scientificName: string;
+  slug?: string;
   populationStatus?: string;
   imageUrl?: string | null;
   images?: { url: string }[];
 }
 
 const Species = () => {
+  const navigate = useNavigate();
   const [species, setSpecies] = useState<SpeciesItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
@@ -250,6 +253,11 @@ const Species = () => {
                         <Button
                           size="small"
                           variant="outlined"
+                          onClick={() => {
+                            if (item.slug) {
+                              navigate(`/admin/species/${item.slug}`);
+                            }
+                          }}
                           sx={{
                             textTransform: "none",
                             borderColor: "rgba(109,220,139,0.45)",
@@ -257,7 +265,7 @@ const Species = () => {
                             "&:hover": { borderColor: "#8be0a6", color: "#e6f5ec" },
                           }}
                         >
-                          View
+                          Get
                         </Button>
                         <Button
                           size="small"
