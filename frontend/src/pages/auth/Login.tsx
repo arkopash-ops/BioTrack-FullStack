@@ -70,15 +70,16 @@ const Login: React.FC = () => {
           padding: 4,
           width: "100%",
           backdropFilter: "blur(10px)",
-          backgroundColor: "rgba(255,255,255,0.1)",
+          backgroundColor: "rgba(8,18,12,0.72)",
           borderRadius: "16px",
+          border: "1px solid rgba(109,220,139,0.18)",
         }}
       >
         <Typography
           variant="h4"
           align="center"
           gutterBottom
-          sx={{ color: "#fff", fontWeight: "bold" }}
+          sx={{ color: "#e6f5ec", fontWeight: "bold" }}
         >
           Login
         </Typography>
@@ -89,14 +90,16 @@ const Login: React.FC = () => {
           margin="normal"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <EmailIcon sx={{ color: "#e0f7e9" }} />
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <EmailIcon sx={{ color: "#b7d7c4" }} />
+                </InputAdornment>
+              ),
+            },
           }}
-          sx={{ input: { color: "#fff" }, label: { color: "#e0f7e9" } }}
+          sx={{ input: { color: "#e6f5ec" }, label: { color: "#b7d7c4" } }}
         />
 
         <TextField
@@ -106,14 +109,16 @@ const Login: React.FC = () => {
           margin="normal"
           value={password}
           onChange={(e) => setPassword(e.target.value)}
-          InputProps={{
-            startAdornment: (
-              <InputAdornment position="start">
-                <LockIcon sx={{ color: "#e0f7e9" }} />
-              </InputAdornment>
-            ),
+          slotProps={{
+            input: {
+              startAdornment: (
+                <InputAdornment position="start">
+                  <LockIcon sx={{ color: "#b7d7c4" }} />
+                </InputAdornment>
+              ),
+            },
           }}
-          sx={{ input: { color: "#fff" }, label: { color: "#e0f7e9" } }}
+          sx={{ input: { color: "#e6f5ec" }, label: { color: "#b7d7c4" } }}
         />
 
         <Button
@@ -123,8 +128,8 @@ const Login: React.FC = () => {
           endIcon={<ArrowForwardIcon />}
           sx={{
             mt: 2,
-            backgroundColor: "#2ecc71",
-            "&:hover": { backgroundColor: "#27ae60" },
+            backgroundColor: "#2f9e5b",
+            "&:hover": { backgroundColor: "#257a47" },
           }}
           onClick={handleLogin}
         >
@@ -135,10 +140,10 @@ const Login: React.FC = () => {
           variant="body2"
           align="center"
           sx={{
-            color: "#e0f7e9",
+            color: "#b7d7c4",
             mt: 2,
             cursor: "pointer",
-            "&:hover": { color: "#185c29", textDecoration: "underline" },
+            "&:hover": { color: "#8be0a6", textDecoration: "underline" },
           }}
           onClick={() => navigate("/register")}
         >

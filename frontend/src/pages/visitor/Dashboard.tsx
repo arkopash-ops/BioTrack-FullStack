@@ -47,7 +47,8 @@ const Dashboard: React.FC = () => {
     fetchUser();
   }, [navigate]);
 
-  if (!profile) return <Typography>Loading...</Typography>;
+  if (!profile)
+    return <Typography sx={{ color: "#b7d7c4", textAlign: "center", mt: 4 }}>Loading...</Typography>;
 
   return (
     <Container
@@ -66,13 +67,16 @@ const Dashboard: React.FC = () => {
           borderRadius: "16px",
           width: "100%",
           backdropFilter: "blur(10px)",
-          backgroundColor: "rgba(255,255,255,0.1)",
+          backgroundColor: "rgba(8,18,12,0.72)",
+          border: "1px solid rgba(109,220,139,0.18)",
+          color: "#e6f5ec",
+          "& .MuiTypography-root": { color: "#e6f5ec" },
         }}
       >
         <Typography
           variant="h4"
           gutterBottom
-          sx={{ color: "#fff", fontWeight: "bold", textAlign: "center", mb: 4 }}
+          sx={{ color: "#e6f5ec", fontWeight: "bold", textAlign: "center", mb: 4 }}
         >
           User Dashboard
         </Typography>
@@ -88,7 +92,7 @@ const Dashboard: React.FC = () => {
                     ? `http://localhost:8080/public/${profile.profileImageUrl}`
                     : "http://localhost:8080/public/default/default-profile.jpg"
                 }
-                sx={{ width: 80, height: 80 }}
+                sx={{ width: 80, height: 80, border: "2px solid rgba(109,220,139,0.35)" }}
               />
             </Stack>
           </Grid>
@@ -96,7 +100,7 @@ const Dashboard: React.FC = () => {
           {/* Name */}
           <Grid size={{ xs: 12, sm: 6 }}>
             <Stack direction="row" spacing={2} alignItems="center">
-              <PersonIcon />
+              <PersonIcon sx={{ color: "#b7d7c4" }} />
               <Typography>
                 <strong>Name:</strong> {profile.userId.name}
               </Typography>
@@ -106,7 +110,7 @@ const Dashboard: React.FC = () => {
           {/* Role */}
           <Grid size={{ xs: 12, sm: 6 }}>
             <Stack direction="row" spacing={2} alignItems="center">
-              <SecurityIcon />
+              <SecurityIcon sx={{ color: "#b7d7c4" }} />
               <Typography>
                 <strong>Role:</strong> {profile.userId.role}
               </Typography>
@@ -123,7 +127,7 @@ const Dashboard: React.FC = () => {
           {/* Phone */}
           <Grid size={{ xs: 12, sm: 6 }}>
             <Stack direction="row" spacing={2} alignItems="center">
-              <PhoneIcon />
+              <PhoneIcon sx={{ color: "#b7d7c4" }} />
               <Typography>
                 <strong>Phone:</strong> {profile.phoneNo}
               </Typography>
@@ -133,7 +137,7 @@ const Dashboard: React.FC = () => {
           {/* Address */}
           <Grid size={{ xs: 12, sm: 6 }}>
             <Stack direction="row" spacing={2} alignItems="flex-start">
-              <LocationOnIcon />
+              <LocationOnIcon sx={{ color: "#b7d7c4" }} />
               <Typography>
                 <strong>Address:</strong>
                 <br />
@@ -151,11 +155,15 @@ const Dashboard: React.FC = () => {
           {/* Social Links */}
           <Grid size={{ xs: 12 }}>
             <Stack direction="row" spacing={2} alignItems="center">
-              <PublicIcon />
+              <PublicIcon sx={{ color: "#b7d7c4" }} />
               <Typography>
                 <strong>Facebook:</strong>{" "}
                 {profile.socialLinks?.facebook ? (
-                  <Link href={profile.socialLinks.facebook} target="_blank">
+                  <Link
+                    href={profile.socialLinks.facebook}
+                    target="_blank"
+                    sx={{ color: "#8be0a6", "&:hover": { color: "#b7d7c4" } }}
+                  >
                     Open
                   </Link>
                 ) : (
@@ -167,11 +175,15 @@ const Dashboard: React.FC = () => {
 
           <Grid size={{ xs: 12 }}>
             <Stack direction="row" spacing={2} alignItems="center">
-              <PublicIcon />
+              <PublicIcon sx={{ color: "#b7d7c4" }} />
               <Typography>
                 <strong>Instagram:</strong>{" "}
                 {profile.socialLinks?.instagram ? (
-                  <Link href={profile.socialLinks.instagram} target="_blank">
+                  <Link
+                    href={profile.socialLinks.instagram}
+                    target="_blank"
+                    sx={{ color: "#8be0a6", "&:hover": { color: "#b7d7c4" } }}
+                  >
                     Open
                   </Link>
                 ) : (

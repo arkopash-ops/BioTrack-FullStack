@@ -6,6 +6,7 @@ type SpeciesCardProps = {
   scientificName: string;
   status?: string;
   imageUrl?: string | null;
+  actions?: React.ReactNode;
   onClick?: MouseEventHandler<HTMLDivElement>;
 };
 
@@ -14,6 +15,7 @@ const SpeciesCard = ({
   scientificName,
   status,
   imageUrl,
+  actions,
   onClick,
 }: SpeciesCardProps) => {
   return (
@@ -24,8 +26,8 @@ const SpeciesCard = ({
         p: 3,
         borderRadius: "16px",
         backdropFilter: "blur(10px)",
-        backgroundColor: "rgba(255,255,255,0.1)",
-        border: "1px solid rgba(255,255,255,0.12)",
+        backgroundColor: "rgba(8,18,12,0.72)",
+        border: "1px solid rgba(109,220,139,0.18)",
         cursor: onClick ? "pointer" : "default",
         transition: "transform 0.2s ease, box-shadow 0.2s ease",
         "&:hover": onClick
@@ -44,7 +46,7 @@ const SpeciesCard = ({
               height: "auto",
               display: "block",
               borderRadius: "12px",
-              border: "1px solid rgba(255,255,255,0.12)",
+              border: "1px solid rgba(109,220,139,0.18)",
             }}
           />
         ) : (
@@ -55,36 +57,37 @@ const SpeciesCard = ({
               borderRadius: "12px",
               overflow: "hidden",
               background:
-                "linear-gradient(135deg, rgba(46,204,113,0.2), rgba(15,32,39,0.6))",
-              border: "1px solid rgba(255,255,255,0.12)",
+                "linear-gradient(135deg, rgba(59,191,122,0.25), rgba(6,19,12,0.8))",
+              border: "1px solid rgba(109,220,139,0.18)",
             }}
           />
         )}
-        <Typography variant="subtitle2" sx={{ color: "#e0f7e9", letterSpacing: 0.5 }}>
+        <Typography variant="subtitle2" sx={{ color: "#b7d7c4", letterSpacing: 0.5 }}>
           Common Name
         </Typography>
-        <Typography variant="h6" sx={{ color: "#fff", fontWeight: "bold" }}>
+        <Typography variant="h6" sx={{ color: "#e6f5ec", fontWeight: "bold" }}>
           {commonName}
         </Typography>
-        <Typography variant="subtitle2" sx={{ color: "#e0f7e9", mt: 1, letterSpacing: 0.5 }}>
+        <Typography variant="subtitle2" sx={{ color: "#b7d7c4", mt: 1, letterSpacing: 0.5 }}>
           Scientific Name
         </Typography>
-        <Typography variant="body1" sx={{ color: "#fff" }}>
+        <Typography variant="body1" sx={{ color: "#e6f5ec" }}>
           {scientificName}
         </Typography>
         {status ? (
           <>
             <Typography
               variant="subtitle2"
-              sx={{ color: "#e0f7e9", mt: 1, letterSpacing: 0.5 }}
+              sx={{ color: "#b7d7c4", mt: 1, letterSpacing: 0.5 }}
             >
               Status
             </Typography>
-            <Typography variant="body1" sx={{ color: "#fff" }}>
+            <Typography variant="body1" sx={{ color: "#e6f5ec" }}>
               {status}
             </Typography>
           </>
         ) : null}
+        {actions ? <Box sx={{ pt: 1 }}>{actions}</Box> : null}
       </Stack>
     </Paper>
   );

@@ -85,21 +85,21 @@ const Users = () => {
   }, [users, search, roleFilter]);
 
   const glassCardSx = {
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(8,18,12,0.72)",
     backdropFilter: "blur(10px)",
     borderRadius: "16px",
     boxShadow: "none",
-    border: "1px solid rgba(255,255,255,0.12)",
+    border: "1px solid rgba(109,220,139,0.18)",
   };
 
-  const chartBarColor = "#2000d8";
+  const chartBarColor = "#3bbf7a";
 
   return (
-    <Box p={3} sx={{ color: "#fff" }}>
+    <Box p={3} sx={{ color: "#e6f5ec" }}>
       <Typography
         variant="h4"
         gutterBottom
-        sx={{ color: "#fff", fontWeight: "bold" }}
+        sx={{ color: "#e6f5ec", fontWeight: "bold" }}
       >
         Admin
       </Typography>
@@ -108,11 +108,11 @@ const Users = () => {
         <Paper sx={{ ...glassCardSx, p: 3 }}>
           <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
             <Box flex={1}>
-              <Typography sx={{ color: "#e0f7e9", fontWeight: "bold" }}>
+              <Typography sx={{ color: "#b7d7c4", fontWeight: "bold" }}>
                 Users by Role
               </Typography>
               {loading ? (
-                <Typography sx={{ color: "#e0f7e9" }}>Loading...</Typography>
+                <Typography sx={{ color: "#b7d7c4" }}>Loading...</Typography>
               ) : (
                 <Box mt={2}>
                   <BarChart
@@ -120,13 +120,13 @@ const Users = () => {
                     height={180}
                     maxValue={maxRoleCount}
                     barColor={chartBarColor}
-                    barShadow="0 8px 20px rgba(46,204,113,0.25)"
+                    barShadow="0 8px 20px rgba(59,191,122,0.35)"
                   />
                 </Box>
               )}
             </Box>
             <Box flex={1}>
-              <Typography sx={{ color: "#e0f7e9", fontWeight: "bold", mb: 2 }}>
+              <Typography sx={{ color: "#b7d7c4", fontWeight: "bold", mb: 2 }}>
                 Filters
               </Typography>
               <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
@@ -136,8 +136,8 @@ const Users = () => {
                   onChange={(e) => setSearch(e.target.value)}
                   fullWidth
                   sx={{
-                    input: { color: "#fff" },
-                    label: { color: "#e0f7e9" },
+                    input: { color: "#e6f5ec" },
+                    label: { color: "#b7d7c4" },
                   }}
                 />
                 <TextField
@@ -147,8 +147,8 @@ const Users = () => {
                   onChange={(e) => setRoleFilter(e.target.value)}
                   sx={{
                     minWidth: 160,
-                    input: { color: "#fff" },
-                    label: { color: "#e0f7e9" },
+                    input: { color: "#e6f5ec" },
+                    label: { color: "#b7d7c4" },
                   }}
                 >
                   <MenuItem value="all">All</MenuItem>
@@ -163,8 +163,8 @@ const Users = () => {
                   color="success"
                   variant="outlined"
                   sx={{
-                    color: "#e0f7e9",
-                    borderColor: "rgba(224,247,233,0.6)",
+                    color: "#b7d7c4",
+                    borderColor: "rgba(109,220,139,0.45)",
                   }}
                 />
               </Stack>
@@ -174,25 +174,25 @@ const Users = () => {
 
         <Paper sx={{ ...glassCardSx, p: 2 }}>
           {loading ? (
-            <Typography sx={{ color: "#e0f7e9" }}>Loading users...</Typography>
+            <Typography sx={{ color: "#b7d7c4" }}>Loading users...</Typography>
           ) : (
             <TableContainer>
               <Table size="small">
                 <TableHead>
                   <TableRow>
-                    <TableCell sx={{ color: "#e0f7e9", fontWeight: "bold" }}>
+                    <TableCell sx={{ color: "#b7d7c4", fontWeight: "bold" }}>
                       Profile
                     </TableCell>
-                    <TableCell sx={{ color: "#e0f7e9", fontWeight: "bold" }}>
+                    <TableCell sx={{ color: "#b7d7c4", fontWeight: "bold" }}>
                       Name
                     </TableCell>
-                    <TableCell sx={{ color: "#e0f7e9", fontWeight: "bold" }}>
+                    <TableCell sx={{ color: "#b7d7c4", fontWeight: "bold" }}>
                       Email
                     </TableCell>
-                    <TableCell sx={{ color: "#e0f7e9", fontWeight: "bold" }}>
+                    <TableCell sx={{ color: "#b7d7c4", fontWeight: "bold" }}>
                       Role
                     </TableCell>
-                    <TableCell sx={{ color: "#e0f7e9", fontWeight: "bold" }}>
+                    <TableCell sx={{ color: "#b7d7c4", fontWeight: "bold" }}>
                       Actions
                     </TableCell>
                   </TableRow>
@@ -208,13 +208,13 @@ const Users = () => {
                               : "http://localhost:8080/public/default/default-profile.jpg"
                           }
                           alt={user.name}
-                          sx={{ border: "2px solid rgba(255,255,255,0.2)" }}
+                          sx={{ border: "2px solid rgba(109,220,139,0.35)" }}
                         />
                       </TableCell>
-                      <TableCell sx={{ color: "#fff" }}>{user.name}</TableCell>
-                      <TableCell sx={{ color: "#fff" }}>{user.email}</TableCell>
+                      <TableCell sx={{ color: "#e6f5ec" }}>{user.name}</TableCell>
+                      <TableCell sx={{ color: "#e6f5ec" }}>{user.email}</TableCell>
                       <TableCell
-                        sx={{ color: "#fff", textTransform: "capitalize" }}
+                        sx={{ color: "#e6f5ec", textTransform: "capitalize" }}
                       >
                         {user.role || "unknown"}
                       </TableCell>
@@ -224,8 +224,8 @@ const Users = () => {
                             variant="contained"
                             color="success"
                             sx={{
-                              backgroundColor: "#2ecc71",
-                              "&:hover": { backgroundColor: "#27ae60" },
+                              backgroundColor: "#2f9e5b",
+                              "&:hover": { backgroundColor: "#257a47" },
                             }}
                             onClick={() =>
                               navigate(`/admin/profile/${user._id}`)
@@ -236,8 +236,8 @@ const Users = () => {
                           <Button
                             variant="outlined"
                             sx={{
-                              color: "#e0f7e9",
-                              borderColor: "rgba(224,247,233,0.6)",
+                              color: "#b7d7c4",
+                              borderColor: "rgba(109,220,139,0.45)",
                             }}
                             onClick={() =>
                               navigate(`/admin/edit-profile/${user._id}`)

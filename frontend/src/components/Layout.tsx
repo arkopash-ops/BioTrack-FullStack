@@ -1,5 +1,5 @@
 import type { ReactNode } from "react";
-import AnimatedBackground from "./AnimatedBackground";
+import Background from "./Background";
 import Navbar from "./Navbar";
 
 type LayoutProps = {
@@ -9,7 +9,7 @@ type LayoutProps = {
 const Layout = ({ children }: LayoutProps) => {
   return (
     <>
-      <AnimatedBackground />
+      <Background />
       <Navbar/>
       {children}
     </>

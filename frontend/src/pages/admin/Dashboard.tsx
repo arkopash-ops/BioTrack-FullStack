@@ -79,23 +79,17 @@ const AdminDashboard = () => {
   );
 
   const glassCardSx = {
-    backgroundColor: "rgba(255,255,255,0.1)",
+    backgroundColor: "rgba(8,18,12,0.72)",
     backdropFilter: "blur(10px)",
     borderRadius: "16px",
     boxShadow: "none",
-    border: "1px solid rgba(255,255,255,0.12)",
+    border: "1px solid rgba(109,220,139,0.18)",
   };
 
-  const cardTitleSx = { color: "#e0f7e9", fontWeight: "bold" };
-  const cardValueSx = { color: "#fff", fontWeight: "bold", fontSize: 28 };
-  const chartBarColor = "#2000d8";
-  const chartColors = [
-    "#8A0303",
-    "#d84c0b",
-    "#0a42da",
-    "#00ff00",
-    "#ecaf06",
-  ];
+  const cardTitleSx = { color: "#b7d7c4", fontWeight: "bold" };
+  const cardValueSx = { color: "#e6f5ec", fontWeight: "bold", fontSize: 28 };
+  const chartBarColor = "#3bbf7a";
+  const chartColors = ["#1f6b3a", "#2f9e5b", "#3bbf7a", "#7fc97f", "#c9b458"];
   const speciesStatuses = Object.entries(speciesByStatus);
   const speciesTotal = species.length;
   const maxRoleCount = Math.max(researcherCount, visitorCount, 1);
@@ -109,8 +103,8 @@ const AdminDashboard = () => {
   }));
 
   return (
-    <Box p={3} sx={{ color: "#fff" }}>
-      <Typography variant="h4" gutterBottom sx={{ color: "#fff", fontWeight: "bold" }}>
+    <Box p={3} sx={{ color: "#e6f5ec" }}>
+      <Typography variant="h4" gutterBottom sx={{ color: "#e6f5ec", fontWeight: "bold" }}>
         Admin Dashboard
       </Typography>
 
@@ -120,7 +114,7 @@ const AdminDashboard = () => {
             <Box flex={1}>
               <Typography sx={cardTitleSx}>Total Users</Typography>
               {loadingUsers ? (
-                <Typography sx={{ color: "#e0f7e9" }}>Loading...</Typography>
+                <Typography sx={{ color: "#b7d7c4" }}>Loading...</Typography>
               ) : (
                 <Typography sx={cardValueSx}>{totalUsers}</Typography>
               )}
@@ -128,7 +122,7 @@ const AdminDashboard = () => {
             <Box flex={1}>
               <Typography sx={cardTitleSx}>Researchers</Typography>
               {loadingUsers ? (
-                <Typography sx={{ color: "#e0f7e9" }}>Loading...</Typography>
+                <Typography sx={{ color: "#b7d7c4" }}>Loading...</Typography>
               ) : (
                 <Typography sx={cardValueSx}>{researcherCount}</Typography>
               )}
@@ -136,7 +130,7 @@ const AdminDashboard = () => {
             <Box flex={1}>
               <Typography sx={cardTitleSx}>Visitors</Typography>
               {loadingUsers ? (
-                <Typography sx={{ color: "#e0f7e9" }}>Loading...</Typography>
+                <Typography sx={{ color: "#b7d7c4" }}>Loading...</Typography>
               ) : (
                 <Typography sx={cardValueSx}>{visitorCount}</Typography>
               )}
@@ -144,7 +138,7 @@ const AdminDashboard = () => {
             <Box flex={1}>
               <Typography sx={cardTitleSx}>Species</Typography>
               {loadingSpecies ? (
-                <Typography sx={{ color: "#e0f7e9" }}>Loading...</Typography>
+                <Typography sx={{ color: "#b7d7c4" }}>Loading...</Typography>
               ) : (
                 <Typography sx={cardValueSx}>{speciesTotal}</Typography>
               )}
@@ -152,50 +146,54 @@ const AdminDashboard = () => {
           </Stack>
         </Paper>
 
-        <Divider sx={{ borderColor: "rgba(255,255,255,0.12)" }} />
+        <Divider sx={{ borderColor: "rgba(109,220,139,0.18)" }} />
 
         <Stack direction={{ xs: "column", lg: "row" }} spacing={3}>
           <Paper sx={{ ...glassCardSx, p: 3, flex: 1 }}>
             <Stack direction="row" spacing={2} alignItems="center" mb={2}>
-              <Typography variant="h6">Users by Role</Typography>
+              <Typography variant="h6" sx={{ color: "#e6f5ec" }}>
+                Users by Role
+              </Typography>
               <Chip
                 label={`${researcherCount + visitorCount} total`}
                 size="small"
                 color="primary"
                 variant="outlined"
-                sx={{ color: "#e0f7e9", borderColor: "rgba(224,247,233,0.6)" }}
+                sx={{ color: "#b7d7c4", borderColor: "rgba(109,220,139,0.45)" }}
               />
             </Stack>
 
             {loadingUsers ? (
-              <Typography sx={{ color: "#e0f7e9" }}>Loading chart...</Typography>
+              <Typography sx={{ color: "#b7d7c4" }}>Loading chart...</Typography>
             ) : (
               <BarChart
                 items={roleItems}
                 height={180}
                 maxValue={maxRoleCount}
                 barColor={chartBarColor}
-                barShadow="0 8px 20px rgba(46,204,113,0.25)"
+                barShadow="0 8px 20px rgba(59,191,122,0.35)"
               />
             )}
           </Paper>
 
           <Paper sx={{ ...glassCardSx, p: 3, flex: 1 }}>
             <Stack direction="row" spacing={2} alignItems="center" mb={2}>
-              <Typography variant="h6">Species by Status</Typography>
+              <Typography variant="h6" sx={{ color: "#e6f5ec" }}>
+                Species by Status
+              </Typography>
               <Chip
                 label={`${speciesTotal} total`}
                 size="small"
                 color="success"
                 variant="outlined"
-                sx={{ color: "#e0f7e9", borderColor: "rgba(224,247,233,0.6)" }}
+                sx={{ color: "#b7d7c4", borderColor: "rgba(109,220,139,0.45)" }}
               />
             </Stack>
 
             {loadingSpecies ? (
-              <Typography sx={{ color: "#e0f7e9" }}>Loading chart...</Typography>
+              <Typography sx={{ color: "#b7d7c4" }}>Loading chart...</Typography>
             ) : speciesStatuses.length === 0 ? (
-              <Typography sx={{ color: "#e0f7e9" }}>No species data.</Typography>
+              <Typography sx={{ color: "#b7d7c4" }}>No species data.</Typography>
             ) : (
               <PieChart items={speciesItems} colors={chartColors} />
             )}

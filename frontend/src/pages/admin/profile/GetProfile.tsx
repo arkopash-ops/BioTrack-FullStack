@@ -70,8 +70,14 @@ const GetProfile = () => {
     }
   };
 
-  if (loading) return <Typography>Loading...</Typography>;
-  if (!profile) return <Typography>Profile not found</Typography>;
+  if (loading)
+    return <Typography sx={{ color: "#b7d7c4", textAlign: "center", mt: 4 }}>Loading...</Typography>;
+  if (!profile)
+    return (
+      <Typography sx={{ color: "#b7d7c4", textAlign: "center", mt: 4 }}>
+        Profile not found
+      </Typography>
+    );
 
   const address = profile.addresses
     ? `${profile.addresses.street || ""}, ${profile.addresses.city || ""}, ${
@@ -81,7 +87,15 @@ const GetProfile = () => {
 
   return (
     <Container maxWidth="md" sx={{ mt: 4 }}>
-      <Card>
+      <Card
+        sx={{
+          backgroundColor: "rgba(8,18,12,0.72)",
+          border: "1px solid rgba(109,220,139,0.18)",
+          backdropFilter: "blur(10px)",
+          color: "#e6f5ec",
+          "& .MuiTypography-root": { color: "#e6f5ec" },
+        }}
+      >
         <CardContent>
           {/* Header */}
           <Box
@@ -90,10 +104,16 @@ const GetProfile = () => {
             alignItems="center"
             mb={3}
           >
-            <Typography variant="h4">User Profile</Typography>
+            <Typography variant="h4" sx={{ color: "#e6f5ec", fontWeight: "bold" }}>
+              User Profile
+            </Typography>
 
             <Box display="flex" gap={2}>
-              <Button variant="contained" onClick={handleEditProfile}>
+              <Button
+                variant="contained"
+                onClick={handleEditProfile}
+                sx={{ backgroundColor: "#2f9e5b", "&:hover": { backgroundColor: "#257a47" } }}
+              >
                 Edit Profile
               </Button>
 
@@ -101,6 +121,7 @@ const GetProfile = () => {
                 variant="contained"
                 color="error"
                 onClick={handleDeleteUser}
+                sx={{ boxShadow: "none" }}
               >
                 Delete User
               </Button>
@@ -115,39 +136,59 @@ const GetProfile = () => {
                   ? `http://localhost:8080/public/${profile.profileImageUrl}`
                   : "http://localhost:8080/public/default/default-profile.jpg"
               }
-              sx={{ width: 100, height: 100 }}
+              sx={{ width: 100, height: 100, border: "2px solid rgba(109,220,139,0.35)" }}
             />
           </Box>
 
           <Grid container spacing={3}>
             {/* User Info */}
             <Grid size={{ xs: 12, sm: 6 }}>
-              <Typography variant="h6">User Information</Typography>
-              <Typography>Name: {profile.userId?.name || "-"}</Typography>
-              <Typography>Email: {profile.userId?.email || "-"}</Typography>
-              <Typography>Phone: {profile.phoneNo || "-"}</Typography>
+              <Typography variant="h6" sx={{ color: "#b7d7c4", fontWeight: "bold" }}>
+                User Information
+              </Typography>
+              <Typography sx={{ color: "#b7d7c4" }}>
+                Name: <span style={{ color: "#e6f5ec" }}>{profile.userId?.name || "-"}</span>
+              </Typography>
+              <Typography sx={{ color: "#b7d7c4" }}>
+                Email: <span style={{ color: "#e6f5ec" }}>{profile.userId?.email || "-"}</span>
+              </Typography>
+              <Typography sx={{ color: "#b7d7c4" }}>
+                Phone: <span style={{ color: "#e6f5ec" }}>{profile.phoneNo || "-"}</span>
+              </Typography>
             </Grid>
 
             {/* Bio */}
             <Grid size={{ xs: 12 }}>
-              <Typography variant="h6">Bio</Typography>
-              <Typography>{profile.bio || "-"}</Typography>
+              <Typography variant="h6" sx={{ color: "#b7d7c4", fontWeight: "bold" }}>
+                Bio
+              </Typography>
+              <Typography sx={{ color: "#e6f5ec" }}>{profile.bio || "-"}</Typography>
             </Grid>
 
             {/* Address */}
             <Grid size={{ xs: 12 }}>
-              <Typography variant="h6">Address</Typography>
-              <Typography>{address}</Typography>
+              <Typography variant="h6" sx={{ color: "#b7d7c4", fontWeight: "bold" }}>
+                Address
+              </Typography>
+              <Typography sx={{ color: "#e6f5ec" }}>{address}</Typography>
             </Grid>
 
             {/* Social Links */}
             <Grid size={{ xs: 12 }}>
-              <Typography variant="h6">Social Links</Typography>
-              <Typography>
-                Facebook: {profile.socialLinks?.facebook || "-"}
+              <Typography variant="h6" sx={{ color: "#b7d7c4", fontWeight: "bold" }}>
+                Social Links
               </Typography>
-              <Typography>
-                Instagram: {profile.socialLinks?.instagram || "-"}
+              <Typography sx={{ color: "#b7d7c4" }}>
+                Facebook:{" "}
+                <span style={{ color: "#e6f5ec" }}>
+                  {profile.socialLinks?.facebook || "-"}
+                </span>
+              </Typography>
+              <Typography sx={{ color: "#b7d7c4" }}>
+                Instagram:{" "}
+                <span style={{ color: "#e6f5ec" }}>
+                  {profile.socialLinks?.instagram || "-"}
+                </span>
               </Typography>
             </Grid>
           </Grid>

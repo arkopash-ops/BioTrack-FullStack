@@ -185,21 +185,46 @@ const EditProfile: React.FC = () => {
     }
   };
 
-  if (loading) return <Typography>Loading...</Typography>;
+  if (loading)
+    return <Typography sx={{ color: "#b7d7c4", textAlign: "center", mt: 4 }}>Loading...</Typography>;
 
   return (
     <Container maxWidth="sm" sx={{ mt: 4 }}>
-      <Paper sx={{ p: 4 }}>
-        <Typography variant="h4" gutterBottom>
+      <Paper
+        sx={{
+          p: 4,
+          backgroundColor: "rgba(8,18,12,0.72)",
+          border: "1px solid rgba(109,220,139,0.18)",
+          backdropFilter: "blur(10px)",
+          color: "#e6f5ec",
+          "& .MuiTypography-root": { color: "#e6f5ec" },
+          "& .MuiFormLabel-root": { color: "#b7d7c4" },
+          "& .MuiInputBase-input": { color: "#e6f5ec" },
+          "& .MuiOutlinedInput-notchedOutline": {
+            borderColor: "rgba(109,220,139,0.35)",
+          },
+          "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline": {
+            borderColor: "rgba(139,224,166,0.6)",
+          },
+          "& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline": {
+            borderColor: "#8be0a6",
+          },
+          "& .MuiFormHelperText-root": { color: "#b7d7c4" },
+        }}
+      >
+        <Typography variant="h4" gutterBottom sx={{ color: "#e6f5ec", fontWeight: "bold" }}>
           Edit User Profile
         </Typography>
 
         <Stack spacing={3}>
           {/* Profile Image */}
           <Stack alignItems="center" spacing={1}>
-            <Avatar src={imageSrc} sx={{ width: 90, height: 90 }} />
+            <Avatar
+              src={imageSrc}
+              sx={{ width: 90, height: 90, border: "2px solid rgba(109,220,139,0.35)" }}
+            />
 
-            <Button component="label" variant="text">
+            <Button component="label" variant="text" sx={{ color: "#8be0a6" }}>
               Change Profile Image
               <input
                 hidden
@@ -247,7 +272,9 @@ const EditProfile: React.FC = () => {
             fullWidth
           />
 
-          <Typography variant="h6">Address</Typography>
+          <Typography variant="h6" sx={{ color: "#b7d7c4", fontWeight: "bold" }}>
+            Address
+          </Typography>
 
           <TextField
             label="Street"
@@ -285,7 +312,9 @@ const EditProfile: React.FC = () => {
             fullWidth
           />
 
-          <Typography variant="h6">Social Links</Typography>
+          <Typography variant="h6" sx={{ color: "#b7d7c4", fontWeight: "bold" }}>
+            Social Links
+          </Typography>
 
           <TextField
             label="Facebook"
@@ -303,7 +332,12 @@ const EditProfile: React.FC = () => {
           />
 
           <Box display="flex" gap={2}>
-            <Button variant="contained" fullWidth onClick={handleSubmit}>
+            <Button
+              variant="contained"
+              fullWidth
+              onClick={handleSubmit}
+              sx={{ backgroundColor: "#2f9e5b", "&:hover": { backgroundColor: "#257a47" } }}
+            >
               Update Profile
             </Button>
 
@@ -311,6 +345,7 @@ const EditProfile: React.FC = () => {
               variant="outlined"
               fullWidth
               onClick={() => navigate("/admin/users")}
+              sx={{ color: "#b7d7c4", borderColor: "rgba(109,220,139,0.45)" }}
             >
               Cancel
             </Button>

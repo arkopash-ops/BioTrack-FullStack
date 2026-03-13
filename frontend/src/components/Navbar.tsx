@@ -59,7 +59,7 @@ const Navbar: React.FC = () => {
     <AppBar
       position="static"
       sx={{
-        backgroundColor: "rgba(255,255,255,0.1)",
+        backgroundColor: "rgba(8,18,12,0.7)",
         backdropFilter: "blur(10px)",
         boxShadow: "none",
       }}
@@ -72,7 +72,7 @@ const Navbar: React.FC = () => {
       >
         <Typography
           variant="h6"
-          sx={{ color: "#fff", fontWeight: "bold", cursor: "pointer" }}
+          sx={{ color: "#e6f5ec", fontWeight: "bold", cursor: "pointer" }}
           onClick={() => navigate("/")}
         >
           BioTrack
@@ -85,27 +85,33 @@ const Navbar: React.FC = () => {
                 {role === "admin" && (
                   <>
                     <Button
-                      sx={{ color: "#e0f7e9", mr: 2, "&:hover": { color: "#185c29" } }}
+                      sx={{ color: "#b7d7c4", mr: 2, "&:hover": { color: "#8be0a6" } }}
                       onClick={() => navigate("/admin/dashboard")}
                     >
                       Dashboard
                     </Button>
                     <Button
-                      sx={{ color: "#e0f7e9", mr: 2, "&:hover": { color: "#185c29" } }}
+                      sx={{ color: "#b7d7c4", mr: 2, "&:hover": { color: "#8be0a6" } }}
                       onClick={() => navigate("/admin/users")}
                     >
                       Users
                     </Button>
                     <Button
-                      sx={{ color: "#e0f7e9", mr: 2, "&:hover": { color: "#185c29" } }}
+                      sx={{ color: "#b7d7c4", mr: 2, "&:hover": { color: "#8be0a6" } }}
                       onClick={() => navigate("/admin/species")}
                     >
                       Species
                     </Button>
+                    <Button
+                      sx={{ color: "#b7d7c4", mr: 2, "&:hover": { color: "#8be0a6" } }}
+                      onClick={() => navigate("/admin/taxonomy")}
+                    >
+                      Taxonomy
+                    </Button>
                   </>
                 )}
                 <Button
-                  sx={{ color: "#e0f7e9", "&:hover": { color: "#185c29" } }}
+                  sx={{ color: "#b7d7c4", "&:hover": { color: "#8be0a6" } }}
                   onClick={handleLogout}
                 >
                   Logout
@@ -116,16 +122,16 @@ const Navbar: React.FC = () => {
             <>
               <Button
                 sx={{
-                  color: "#e0f7e9",
+                  color: "#b7d7c4",
                   mr: 2,
-                  "&:hover": { color: "#185c29" },
+                  "&:hover": { color: "#8be0a6" },
                 }}
                 onClick={() => navigate("/login")}
               >
                 Login
               </Button>
               <Button
-                sx={{ color: "#e0f7e9", "&:hover": { color: "#185c29" } }}
+                sx={{ color: "#b7d7c4", "&:hover": { color: "#8be0a6" } }}
                 onClick={() => navigate("/register")}
               >
                 Register

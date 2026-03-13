@@ -52,20 +52,21 @@ const Guest: React.FC = () => {
               p: 4,
               width: "100%",
               backdropFilter: "blur(10px)",
-              backgroundColor: "rgba(255,255,255,0.1)",
+              backgroundColor: "rgba(8,18,12,0.72)",
               borderRadius: "16px",
+              border: "1px solid rgba(109,220,139,0.18)",
               textAlign: "center",
             }}
           >
             <Typography
               variant="h4"
               gutterBottom
-              sx={{ color: "#fff", fontWeight: "bold" }}
+              sx={{ color: "#e6f5ec", fontWeight: "bold" }}
             >
               Welcome, Guest!
             </Typography>
 
-            <Typography variant="body1" sx={{ color: "#e0f7e9", mb: 3 }}>
+            <Typography variant="body1" sx={{ color: "#b7d7c4", mb: 3 }}>
               You are currently browsing as a guest. To access all features,
               please create an account.
             </Typography>
@@ -73,9 +74,9 @@ const Guest: React.FC = () => {
             <Button
               variant="contained"
               sx={{
-                backgroundColor: "#2ecc71",
-                color: "#fff",
-                "&:hover": { backgroundColor: "#27ae60" },
+                backgroundColor: "#2f9e5b",
+                color: "#e6f5ec",
+                "&:hover": { backgroundColor: "#257a47" },
               }}
               onClick={() => navigate("/register")}
             >
@@ -85,9 +86,9 @@ const Guest: React.FC = () => {
             <Button
               variant="text"
               sx={{
-                color: "#e0f7e9",
+                color: "#b7d7c4",
                 ml: 2,
-                "&:hover": { textDecoration: "underline", color: "#185c26" },
+                "&:hover": { textDecoration: "underline", color: "#8be0a6" },
               }}
               onClick={() => navigate("/login")}
             >
@@ -97,12 +98,12 @@ const Guest: React.FC = () => {
         </Grid>
 
         <Grid size={{ xs: 12 }}>
-          <Typography variant="h5" sx={{ color: "#fff", fontWeight: "bold", mb: 2 }}>
+          <Typography variant="h5" sx={{ color: "#e6f5ec", fontWeight: "bold", mb: 2 }}>
             Species Preview
           </Typography>
 
           {loading ? (
-            <Typography sx={{ color: "#e0f7e9" }}>Loading species...</Typography>
+            <Typography sx={{ color: "#b7d7c4" }}>Loading species...</Typography>
           ) : (
             <Box
               sx={{

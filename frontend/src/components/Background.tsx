@@ -1,9 +1,8 @@
-import { useEffect, useState } from "react";
-import { animate } from "animejs";
+import { useState } from "react";
 
 import type { Circle } from "../interfaces";
 
-const AnimatedBackground = () => {
+const Background = () => {
   const [circles] = useState<Circle[]>(() =>
     Array.from({ length: 20 }, () => ({
       top: Math.random() * 100,
@@ -12,25 +11,13 @@ const AnimatedBackground = () => {
     })),
   );
 
-  useEffect(() => {
-    animate(".circle", {
-      translateY: [-20, 20],
-      translateX: [-10, 10],
-      direction: "alternate",
-      loop: true,
-      easing: "easeInOutSine",
-      duration: 3000,
-      delay: (_, i) => i * 200,
-    });
-  }, []);
-
   return (
     <div
       style={{
         position: "fixed",
         width: "100%",
         height: "100%",
-        background: "linear-gradient(135deg,#0f2027,#2ecc71,#27ae60)",
+        background: "linear-gradient(135deg,#06130c,#0b2417,#1a4a31)",
         overflow: "hidden",
         zIndex: -1,
       }}
@@ -44,7 +31,7 @@ const AnimatedBackground = () => {
             width: `${circle.size}px`,
             height: `${circle.size}px`,
             borderRadius: "50%",
-            background: "rgba(255,255,255,0.08)",
+            background: "rgba(109,220,139,0.08)",
             top: `${circle.top}%`,
             left: `${circle.left}%`,
           }}
@@ -54,4 +41,4 @@ const AnimatedBackground = () => {
   );
 };
 
-export default AnimatedBackground;
+export default Background;

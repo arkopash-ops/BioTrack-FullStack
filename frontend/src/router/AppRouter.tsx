@@ -11,6 +11,7 @@ import Register from "../pages/auth/Register";
 import AdminDashboard from "../pages/admin/Dashboard";
 import AdminUsers from "../pages/admin/Users";
 import AdminSpecies from "../pages/admin/Species";
+import AdminTaxonomy from "../pages/admin/Taxonomy";
 
 import GetProfile from "../pages/admin/profile/GetProfile";
 import EditProfile from "../pages/admin/profile/EditProfile";
@@ -47,6 +48,14 @@ const AppRouter = () => {
             element={
               <ProtectedRoute>
                 <AdminSpecies />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/taxonomy"
+            element={
+              <ProtectedRoute>
+                <AdminTaxonomy />
               </ProtectedRoute>
             }
           />

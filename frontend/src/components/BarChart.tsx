@@ -22,14 +22,15 @@ const BarChart = ({
   height = 180,
   minBarHeight = 20,
   maxValue,
-  barColor = "#2ecc71",
-  barShadow = "0 8px 20px rgba(46,204,113,0.25)",
+  barColor = "#3bbf7a",
+  barShadow = "0 8px 20px rgba(59,191,122,0.35)",
   barWidth = "70%",
-  labelColor = "#e0f7e9",
-  valueColor = "#e0f7e9",
+  labelColor = "#b7d7c4",
+  valueColor = "#e6f5ec",
 }: BarChartProps) => {
   const computedMax = maxValue ?? Math.max(...items.map((item) => item.value), 1);
-  const availableHeight = Math.max(height - minBarHeight, 1);
+  const reservedSpace = 48;
+  const availableHeight = Math.max(height - minBarHeight - reservedSpace, 1);
 
   return (
     <Stack direction="row" spacing={2} alignItems="flex-end" sx={{ height }}>
@@ -37,8 +38,13 @@ const BarChart = ({
         const scaledHeight = (item.value / computedMax) * availableHeight + minBarHeight;
         const barHeight = Math.max(minBarHeight, scaledHeight);
         return (
-          <Stack key={item.label} alignItems="center" spacing={1} sx={{ flex: 1 }}>
-            <Typography sx={{ color: valueColor }}>{item.value}</Typography>
+          <Stack
+            key={item.label}
+            alignItems="center"
+            spacing={1}
+            sx={{ flex: 1, height: "100%", justifyContent: "flex-end" }}
+          >
+            <Typography sx={{ color: valueColor, mb: 0.5 }}>{item.value}</Typography>
             <Box
               sx={{
                 width: barWidth,
@@ -48,7 +54,7 @@ const BarChart = ({
                 boxShadow: barShadow,
               }}
             />
-            <Typography sx={{ color: labelColor }}>{item.label}</Typography>
+            <Typography sx={{ color: labelColor, mt: 0.5 }}>{item.label}</Typography>
           </Stack>
         );
       })}

@@ -9,6 +9,7 @@ import {
   MenuItem,
   Chip,
   Divider,
+  Button,
 } from "@mui/material";
 import axios from "axios";
 import Grid from "@mui/system/Grid";
@@ -20,6 +21,8 @@ interface SpeciesItem {
   commonName: string;
   scientificName: string;
   populationStatus?: string;
+  imageUrl?: string | null;
+  images?: { url: string }[];
 }
 
 const Species = () => {
@@ -92,13 +95,7 @@ const Species = () => {
   const speciesStatuses = Object.entries(speciesByStatus);
   const speciesTotal = filteredSpecies.length;
 
-  const chartColors = [
-    "#8A0303",
-    "#d84c0b",
-    "#0a42da",
-    "#00ff00",
-    "#ecaf06",
-  ];
+  const chartColors = ["#1f6b3a", "#2f9e5b", "#3bbf7a", "#7fc97f", "#c9b458"];
   const speciesItems = speciesStatuses.map(([status, count]) => ({
     label: status,
     value: count,
@@ -114,14 +111,15 @@ const Species = () => {
               p: 4,
               width: "100%",
               backdropFilter: "blur(10px)",
-              backgroundColor: "rgba(255,255,255,0.1)",
+              backgroundColor: "rgba(8,18,12,0.72)",
               borderRadius: "16px",
+              border: "1px solid rgba(109,220,139,0.18)",
             }}
           >
             <Typography
               variant="h4"
               gutterBottom
-              sx={{ color: "#fff", fontWeight: "bold" }}
+              sx={{ color: "#e6f5ec", fontWeight: "bold" }}
             >
               Species
             </Typography>
@@ -129,7 +127,9 @@ const Species = () => {
             <Stack spacing={3} mt={2}>
               <Stack direction={{ xs: "column", md: "row" }} spacing={2}>
                 <Box flex={1}>
-                  <Typography sx={{ color: "#e0f7e9", fontWeight: "bold", mb: 2 }}>
+                  <Typography
+                    sx={{ color: "#b7d7c4", fontWeight: "bold", mb: 2 }}
+                  >
                     Filters
                   </Typography>
                   <Stack direction={{ xs: "column", sm: "row" }} spacing={2}>
@@ -139,8 +139,8 @@ const Species = () => {
                       onChange={(e) => setSearch(e.target.value)}
                       fullWidth
                       sx={{
-                        input: { color: "#fff" },
-                        label: { color: "#e0f7e9" },
+                        input: { color: "#e6f5ec" },
+                        label: { color: "#b7d7c4" },
                       }}
                     />
                     <TextField
@@ -150,8 +150,8 @@ const Species = () => {
                       onChange={(e) => setStatusFilter(e.target.value)}
                       sx={{
                         minWidth: 180,
-                        input: { color: "#fff" },
-                        label: { color: "#e0f7e9" },
+                        input: { color: "#e6f5ec" },
+                        label: { color: "#b7d7c4" },
                       }}
                     >
                       {statusOptions.map((status) => (
@@ -167,7 +167,10 @@ const Species = () => {
                       size="small"
                       color="success"
                       variant="outlined"
-                      sx={{ color: "#e0f7e9", borderColor: "rgba(224,247,233,0.6)" }}
+                      sx={{
+                        color: "#b7d7c4",
+                        borderColor: "rgba(109,220,139,0.45)",
+                      }}
                     />
                   </Stack>
                 </Box>
@@ -175,18 +178,24 @@ const Species = () => {
                   orientation="vertical"
                   flexItem
                   sx={{
-                    borderColor: "rgba(255,255,255,0.12)",
+                    borderColor: "rgba(109,220,139,0.18)",
                     display: { xs: "none", md: "block" },
                   }}
                 />
                 <Box flex={1}>
-                  <Typography sx={{ color: "#e0f7e9", fontWeight: "bold", mb: 2 }}>
+                  <Typography
+                    sx={{ color: "#b7d7c4", fontWeight: "bold", mb: 2 }}
+                  >
                     Species by Status
                   </Typography>
                   {loading ? (
-                    <Typography sx={{ color: "#e0f7e9" }}>Loading chart...</Typography>
+                    <Typography sx={{ color: "#b7d7c4" }}>
+                      Loading chart...
+                    </Typography>
                   ) : speciesStatuses.length === 0 ? (
-                    <Typography sx={{ color: "#e0f7e9" }}>No species data.</Typography>
+                    <Typography sx={{ color: "#b7d7c4" }}>
+                      No species data.
+                    </Typography>
                   ) : (
                     <PieChart items={speciesItems} colors={chartColors} />
                   )}
@@ -197,35 +206,72 @@ const Species = () => {
         </Grid>
 
         <Grid size={{ xs: 12 }}>
-          <Typography variant="h5" sx={{ color: "#fff", fontWeight: "bold", mb: 2 }}>
+          <Typography
+            variant="h5"
+            sx={{ color: "#e6f5ec", fontWeight: "bold", mb: 2 }}
+          >
             Species List
           </Typography>
 
           {loading ? (
-            <Typography sx={{ color: "#e0f7e9" }}>Loading species...</Typography>
+            <Typography sx={{ color: "#b7d7c4" }}>
+              Loading species...
+            </Typography>
           ) : filteredSpecies.length === 0 ? (
-            <Typography sx={{ color: "#e0f7e9" }}>No species found.</Typography>
+            <Typography sx={{ color: "#b7d7c4" }}>No species found.</Typography>
           ) : (
             <Box
               sx={{
                 columnCount: { xs: 1, sm: 2, md: 3 },
                 columnGap: 16,
-                columnFill: "balance",
-                "& > *": {
-                  breakInside: "avoid",
-                  pageBreakInside: "avoid",
-                  mb: 2,
-                  display: "inline-block",
-                  width: "100%",
-                },
               }}
             >
               {filteredSpecies.map((item) => (
-                <Box key={item._id}>
+                <Box
+                  key={item._id}
+                  sx={{
+                    breakInside: "avoid",
+                    mb: 2,
+                    display: "inline-block",
+                    width: "100%",
+                  }}
+                >
                   <SpeciesCard
                     commonName={item.commonName}
                     scientificName={item.scientificName}
                     status={item.populationStatus || "Unknown"}
+                    imageUrl={item.imageUrl ?? item.images?.[0]?.url ?? null}
+                    actions={
+                      <Stack
+                        direction="row"
+                        spacing={1}
+                        sx={{ justifyContent: "center" }}
+                      >
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          sx={{
+                            textTransform: "none",
+                            borderColor: "rgba(109,220,139,0.45)",
+                            color: "#b7d7c4",
+                            "&:hover": { borderColor: "#8be0a6", color: "#e6f5ec" },
+                          }}
+                        >
+                          View
+                        </Button>
+                        <Button
+                          size="small"
+                          variant="contained"
+                          sx={{
+                            textTransform: "none",
+                            backgroundColor: "#2f7d4b",
+                            "&:hover": { backgroundColor: "#3b9960" },
+                          }}
+                        >
+                          Edit
+                        </Button>
+                      </Stack>
+                    }
                   />
                 </Box>
               ))}

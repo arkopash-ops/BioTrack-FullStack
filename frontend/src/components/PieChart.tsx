@@ -17,9 +17,9 @@ type PieChartProps = {
 const PieChart = ({
   items,
   size = 180,
-  colors = ["#8A0303", "#d84c0b", "#0a42da", "#00ff00", "#ecaf06"],
-  borderColor = "rgba(255,255,255,0.15)",
-  labelColor = "#e0f7e9",
+  colors = ["#1f6b3a", "#2f9e5b", "#3bbf7a", "#7fc97f", "#c9b458"],
+  borderColor = "rgba(109,220,139,0.22)",
+  labelColor = "#b7d7c4",
 }: PieChartProps) => {
   const total = items.reduce((sum, item) => sum + item.value, 0);
 
