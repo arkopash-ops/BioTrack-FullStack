@@ -61,6 +61,14 @@ export const getAllSpecies = async () => {
 };
 
 
+export const getPublicSpeciesList = async () => {
+    return SpeciesModel.find(
+        {},
+        { commonName: 1, scientificName: 1, images: 1 }
+    ).sort({ scientificName: 1 });
+};
+
+
 export const getRelatedSpecies = async (slug: string) => {
     const species = await SpeciesModel.findOne({ slug });
 

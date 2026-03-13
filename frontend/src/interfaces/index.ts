@@ -56,6 +56,7 @@ export interface DashboardUser {
   _id: string;
   name: string;
   email: string;
+  role?: string;
   phoneNo: string;
   bio: string;
   addresses: Address;

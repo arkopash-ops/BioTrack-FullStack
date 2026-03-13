@@ -7,6 +7,11 @@ import { uploadSpeciesImages } from "../middlewares/uploadSpeciesImages.middlewa
 
 const router = Router();
 
+router.get(
+    "/public",
+    speciesController._getPublicSpeciesList
+);
+
 // image
 router.post(
     "/:slug/images",

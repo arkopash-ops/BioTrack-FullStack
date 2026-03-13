@@ -1,6 +1,7 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 
 import Layout from "../components/Layout";
+import ProtectedRoute from "../components/ProtectedRoute";
 
 import Guest from "../pages/guest/Guest";
 
@@ -22,11 +23,39 @@ const AppRouter = () => {
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
 
-          <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          <Route path="/visitor/dashboard" element={<VisitorDashboard />} />
+          <Route
+            path="/admin/dashboard"
+            element={
+              <ProtectedRoute>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/visitor/dashboard"
+            element={
+              <ProtectedRoute>
+                <VisitorDashboard />
+              </ProtectedRoute>
+            }
+          />
 
-          <Route path="/admin/profile/:userId" element={<GetProfile />} />
-          <Route path="/admin/edit-profile/:userId" element={<EditProfile />} />
+          <Route
+            path="/admin/profile/:userId"
+            element={
+              <ProtectedRoute>
+                <GetProfile />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/edit-profile/:userId"
+            element={
+              <ProtectedRoute>
+                <EditProfile />
+              </ProtectedRoute>
+            }
+          />
         </Routes>
       </Layout>
     </BrowserRouter>

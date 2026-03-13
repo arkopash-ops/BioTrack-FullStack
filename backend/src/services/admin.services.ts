@@ -10,7 +10,7 @@ import { Roles, UserStatus } from "../types/users.types";
 export const getAllUsers = async (): Promise<ProfileDocument[]> => {
     const profiles = await ProfileModel.find().populate({
         path: "userId",
-        select: "name email",
+        select: "name email role",
     });
 
     if (!profiles || profiles.length === 0) {

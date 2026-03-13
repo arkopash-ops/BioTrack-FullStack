@@ -12,6 +12,7 @@ export const _getAllUsers = async (req: Request, res: Response, next: NextFuncti
             _id: profile._id,
             name: (profile.userId as any)?.name,
             email: (profile.userId as any)?.email,
+            role: (profile.userId as any)?.role,
             phoneNo: profile.phoneNo,
             bio: profile.bio,
             addresses: profile.addresses,

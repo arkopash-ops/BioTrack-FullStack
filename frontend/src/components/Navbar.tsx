@@ -1,19 +1,23 @@
 import React, { useState, useEffect } from "react";
 import { AppBar, Toolbar, Typography, Button } from "@mui/material";
 import { useNavigate } from "react-router-dom";
+import ProtectedRoute from "./ProtectedRoute";
 
 const Navbar: React.FC = () => {
   const navigate = useNavigate();
 
+  const readAuthStatus = () =>
+    localStorage.getItem("isAuthenticated") === "true" ||
+    Boolean(localStorage.getItem("token"));
+
   // Initial auth state
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
-    localStorage.getItem("isAuthenticated") === "true",
-  );
+  const [isAuthenticated, setIsAuthenticated] =
+    useState<boolean>(readAuthStatus());
 
   // Listen for auth changes
   useEffect(() => {
     const updateAuth = () => {
-      setIsAuthenticated(localStorage.getItem("isAuthenticated") === "true");
+      setIsAuthenticated(readAuthStatus());
     };
 
     window.addEventListener("authChanged", updateAuth);
@@ -37,6 +41,8 @@ const Navbar: React.FC = () => {
 
       // Clear flag and notify Navbar
       localStorage.removeItem("isAuthenticated");
+      localStorage.removeItem("token");
+      localStorage.removeItem("userRole");
       window.dispatchEvent(new Event("authChanged"));
 
       navigate("/login");
@@ -71,12 +77,14 @@ const Navbar: React.FC = () => {
 
         <div>
           {isAuthenticated ? (
-            <Button
-              sx={{ color: "#e0f7e9", "&:hover": { color: "#185c29" } }}
-              onClick={handleLogout}
-            >
-              Logout
-            </Button>
+            <ProtectedRoute>
+              <Button
+                sx={{ color: "#e0f7e9", "&:hover": { color: "#185c29" } }}
+                onClick={handleLogout}
+              >
+                Logout
+              </Button>
+            </ProtectedRoute>
           ) : (
             <>
               <Button

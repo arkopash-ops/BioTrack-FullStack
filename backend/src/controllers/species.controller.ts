@@ -74,6 +74,31 @@ export const _getAllSpecies = async (
 };
 
 
+export const _getPublicSpeciesList = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    try {
+        const speciesList = await speciesService.getPublicSpeciesList();
+        const result = speciesList.map((item: any) => ({
+            _id: item._id,
+            commonName: item.commonName,
+            scientificName: item.scientificName,
+            imageUrl: item.images?.[0]?.url || null
+        }));
+
+        res.status(200).json({
+            success: true,
+            count: result.length,
+            data: result
+        });
+    } catch (error: any) {
+        next(error);
+    }
+};
+
+
 export const _getRelatedSpecies = async (
     req: Request,
     res: Response,
