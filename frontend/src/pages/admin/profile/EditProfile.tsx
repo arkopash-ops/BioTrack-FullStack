@@ -310,7 +310,7 @@ const EditProfile: React.FC = () => {
             <Button
               variant="outlined"
               fullWidth
-              onClick={() => navigate("/admin/dashboard")}
+              onClick={() => navigate("/admin/users")}
             >
               Cancel
             </Button>

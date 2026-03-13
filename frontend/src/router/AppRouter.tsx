@@ -9,10 +9,13 @@ import Login from "../pages/auth/Login";
 import Register from "../pages/auth/Register";
 
 import AdminDashboard from "../pages/admin/Dashboard";
-import VisitorDashboard from "../pages/visitor/Dashboard";
+import AdminUsers from "../pages/admin/Users";
+import AdminSpecies from "../pages/admin/Species";
 
 import GetProfile from "../pages/admin/profile/GetProfile";
 import EditProfile from "../pages/admin/profile/EditProfile";
+
+import VisitorDashboard from "../pages/visitor/Dashboard";
 
 const AppRouter = () => {
   return (
@@ -28,6 +31,22 @@ const AppRouter = () => {
             element={
               <ProtectedRoute>
                 <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/users"
+            element={
+              <ProtectedRoute>
+                <AdminUsers />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/admin/species"
+            element={
+              <ProtectedRoute>
+                <AdminSpecies />
               </ProtectedRoute>
             }
           />

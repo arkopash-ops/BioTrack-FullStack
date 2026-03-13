@@ -4,6 +4,7 @@ import { Paper, Typography, Stack, Box } from "@mui/material";
 type SpeciesCardProps = {
   commonName: string;
   scientificName: string;
+  status?: string;
   imageUrl?: string | null;
   onClick?: MouseEventHandler<HTMLDivElement>;
 };
@@ -11,6 +12,7 @@ type SpeciesCardProps = {
 const SpeciesCard = ({
   commonName,
   scientificName,
+  status,
   imageUrl,
   onClick,
 }: SpeciesCardProps) => {
@@ -70,6 +72,19 @@ const SpeciesCard = ({
         <Typography variant="body1" sx={{ color: "#fff" }}>
           {scientificName}
         </Typography>
+        {status ? (
+          <>
+            <Typography
+              variant="subtitle2"
+              sx={{ color: "#e0f7e9", mt: 1, letterSpacing: 0.5 }}
+            >
+              Status
+            </Typography>
+            <Typography variant="body1" sx={{ color: "#fff" }}>
+              {status}
+            </Typography>
+          </>
+        ) : null}
       </Stack>
     </Paper>
   );

@@ -9,15 +9,18 @@ const Navbar: React.FC = () => {
   const readAuthStatus = () =>
     localStorage.getItem("isAuthenticated") === "true" ||
     Boolean(localStorage.getItem("token"));
+  const readRole = () => localStorage.getItem("userRole") || "";
 
   // Initial auth state
   const [isAuthenticated, setIsAuthenticated] =
     useState<boolean>(readAuthStatus());
+  const [role, setRole] = useState<string>(readRole());
 
   // Listen for auth changes
   useEffect(() => {
     const updateAuth = () => {
       setIsAuthenticated(readAuthStatus());
+      setRole(readRole());
     };
 
     window.addEventListener("authChanged", updateAuth);
@@ -78,12 +81,36 @@ const Navbar: React.FC = () => {
         <div>
           {isAuthenticated ? (
             <ProtectedRoute>
-              <Button
-                sx={{ color: "#e0f7e9", "&:hover": { color: "#185c29" } }}
-                onClick={handleLogout}
-              >
-                Logout
-              </Button>
+              <>
+                {role === "admin" && (
+                  <>
+                    <Button
+                      sx={{ color: "#e0f7e9", mr: 2, "&:hover": { color: "#185c29" } }}
+                      onClick={() => navigate("/admin/dashboard")}
+                    >
+                      Dashboard
+                    </Button>
+                    <Button
+                      sx={{ color: "#e0f7e9", mr: 2, "&:hover": { color: "#185c29" } }}
+                      onClick={() => navigate("/admin/users")}
+                    >
+                      Users
+                    </Button>
+                    <Button
+                      sx={{ color: "#e0f7e9", mr: 2, "&:hover": { color: "#185c29" } }}
+                      onClick={() => navigate("/admin/species")}
+                    >
+                      Species
+                    </Button>
+                  </>
+                )}
+                <Button
+                  sx={{ color: "#e0f7e9", "&:hover": { color: "#185c29" } }}
+                  onClick={handleLogout}
+                >
+                  Logout
+                </Button>
+              </>
             </ProtectedRoute>
           ) : (
             <>
